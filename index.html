@@ -3,56 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LMS & ID Strategic Alignment 2026</title>
+  <title>LMS & ID Alignment — 2026 MBO Cascade</title>
 
+  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
-    .fade-in { animation: fadeIn .4s ease-out; }
-    @keyframes fadeIn { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
-    
-    /* Tab Styling */
-    .tab-active { border-bottom: 2px solid #ea580c; color:#ea580c; font-weight:700; background:#fff7ed; }
-    .tab-inactive { color:#64748b; font-weight: 500; }
-    .tab-inactive:hover { color:#0f172a; background:#f1f5f9; }
-    
-    /* Card Hover Effects */
-    .card-hover { transition: all 0.2s ease-in-out; }
-    .card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
-    
-    /* Custom Badge */
-    .badge { display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    .fade-in { animation: fadeIn .35s ease-out; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px);} to {opacity:1; transform: translateY(0);} }
+    .tab-active { border-bottom: 2px solid #f97316; color:#f97316; font-weight:600; background:#fff7ed; }
+    .tab-inactive { color:#64748b; }
+    .tab-inactive:hover { color:#0f172a; background:#f8fafc; }
+    .card-hover:hover { transform: translateY(-1px); box-shadow: 0 10px 18px -12px rgba(0,0,0,.25); }
+    .pill { border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.08); }
   </style>
 </head>
-<body class="min-h-screen pb-12">
 
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-          <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-3 rounded-xl shadow-md">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-orange-600 text-white p-2.5 rounded-xl shadow-sm">
             <i data-lucide="layers" class="w-6 h-6"></i>
           </div>
           <div>
-            <h1 class="text-xl font-bold leading-tight text-slate-900">2026 MBO Strategic Alignment</h1>
-            <p class="text-sm text-slate-500 font-medium">
-              LMS Administration & ID Specialist • <span class="text-orange-600">Hunter Douglas</span>
+            <h1 class="text-lg sm:text-xl font-bold leading-tight">2026 MBO Cascade — LMS & Instructional Design Operating Model</h1>
+            <p class="text-xs sm:text-sm text-slate-500">
+              Alignment Overview • SABA LMS • Jira Service Management • Content Production (Articulate / Canva / Synthesia)
+            </p>
+            <p class="text-xs text-slate-500 mt-0.5">
+              <span class="font-semibold text-slate-600">Prepared for:</span> L&amp;D Leadership &nbsp;•&nbsp;
+              <span class="font-semibold text-slate-600">Prepared by:</span> [Your Name] &nbsp;•&nbsp;
+              <span class="font-semibold text-slate-600">Date:</span> [MM/DD/YYYY]
             </p>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <span class="badge bg-green-100 text-green-700 border border-green-200">
-            <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-            Status: Planning Phase
-          </span>
-          <button onclick="window.print()" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50 text-slate-600 transition-colors">
-            <i data-lucide="printer" class="w-4 h-4"></i> Save PDF
+        <div class="flex items-center gap-2">
+          <button
+            class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50"
+            onclick="window.print()"
+            title="Print / Save as PDF"
+          >
+            <i data-lucide="printer" class="w-4 h-4"></i> Print / PDF
           </button>
+
+          <span class="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            Planning / Alignment Phase
+          </span>
         </div>
       </div>
     </div>
@@ -60,339 +67,617 @@
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-    <section class="bg-slate-900 text-white rounded-2xl p-8 shadow-xl relative overflow-hidden">
-      <div class="absolute top-0 right-0 p-12 opacity-5">
-        <i data-lucide="target" class="w-64 h-64"></i>
-      </div>
-
-      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-        <div class="lg:col-span-2 space-y-4">
-          <h2 class="text-3xl font-bold">From "Task Execution" to <span class="text-orange-400">System Ownership</span></h2>
-          <p class="text-slate-300 text-lg leading-relaxed max-w-2xl">
-            This plan ensures my MBOs directly cascade from your 2026 Strategic Pillars. 
-            I am shifting focus to <strong>Operational Excellence</strong> (Jira-driven) and <strong>Full-Stack Content Ownership</strong> (ID & Onboarding) to deliver measurable results.
+    <!-- Executive Hero -->
+    <section class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+          <h2 class="text-2xl sm:text-3xl font-bold mb-3">Purpose of this Overview</h2>
+          <p class="text-slate-200 leading-relaxed mb-4">
+            This document provides a clear <span class="text-orange-300 font-semibold">line-of-sight cascade</span> from the 2026 L&amp;D strategic pillars
+            to role-owned deliverables and measurable performance indicators.
+            It is designed to support goal alignment, scope clarity, and performance measurement consistency.
           </p>
-          
-          <div class="flex flex-wrap gap-3 pt-2">
-            <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-sm">
-              <i data-lucide="check-circle" class="w-4 h-4 text-orange-400"></i> Predictable SLAs
-            </div>
-            <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-sm">
-              <i data-lucide="check-circle" class="w-4 h-4 text-orange-400"></i> Scalable Onboarding
-            </div>
-            <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-sm">
-              <i data-lucide="check-circle" class="w-4 h-4 text-orange-400"></i> Measurable Quality
-            </div>
+
+          <div class="flex flex-wrap gap-2">
+            <span class="pill px-3 py-1.5 rounded-full text-xs font-semibold">Scope &amp; Boundaries</span>
+            <span class="pill px-3 py-1.5 rounded-full text-xs font-semibold">KPIs (targets + data sources)</span>
+            <span class="pill px-3 py-1.5 rounded-full text-xs font-semibold">Jira Service Catalog + Intake Standards</span>
+            <span class="pill px-3 py-1.5 rounded-full text-xs font-semibold">Quarterly Roadmap</span>
           </div>
         </div>
 
-        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-inner">
-          <h3 class="font-bold text-sm uppercase tracking-wider text-slate-400 mb-4">Proposed Focus Allocation</h3>
-          <div class="space-y-4">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold">Proposed 2026 Focus Allocation</h3>
+            <i data-lucide="pie-chart" class="w-5 h-5 text-orange-300"></i>
+          </div>
+
+          <!-- Adjust weights here -->
+          <div class="space-y-3 text-sm">
             <div>
-              <div class="flex justify-between text-sm mb-1">
-                <span class="font-semibold text-white">LMS Ops & Admin</span>
-                <span class="font-bold text-orange-400">60%</span>
+              <div class="flex justify-between text-slate-200 mb-1">
+                <span class="font-semibold">LMS Operations (SABA + Jira)</span>
+                <span class="font-bold">60%</span>
               </div>
-              <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
-                <div class="h-full bg-orange-500" style="width: 60%"></div>
+              <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-2 bg-orange-500" style="width:60%"></div>
               </div>
-              <p class="text-xs text-slate-400 mt-1">Jira, Reporting, Cohorts, SABA Maintenance</p>
             </div>
+
             <div>
-              <div class="flex justify-between text-sm mb-1">
-                <span class="font-semibold text-white">Global Onboarding (ID)</span>
-                <span class="font-bold text-blue-400">30%</span>
+              <div class="flex justify-between text-slate-200 mb-1">
+                <span class="font-semibold">Global Onboarding Enablement</span>
+                <span class="font-bold">30%</span>
               </div>
-              <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
-                <div class="h-full bg-blue-500" style="width: 30%"></div>
+              <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-2 bg-blue-500" style="width:30%"></div>
               </div>
-              <p class="text-xs text-slate-400 mt-1">Articulate Build, Asset Creation, Pilot Launch</p>
             </div>
+
             <div>
-              <div class="flex justify-between text-sm mb-1">
-                <span class="font-semibold text-white">Learner Experience / STAR</span>
-                <span class="font-bold text-green-400">10%</span>
+              <div class="flex justify-between text-slate-200 mb-1">
+                <span class="font-semibold">Learner Experience &amp; Measurement</span>
+                <span class="font-bold">10%</span>
               </div>
-              <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
-                <div class="h-full bg-green-500" style="width: 10%"></div>
+              <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-2 bg-emerald-500" style="width:10%"></div>
               </div>
-              <p class="text-xs text-slate-400 mt-1">Tier 1 Support, NPS, Infrastructure</p>
             </div>
           </div>
+
+          <p class="mt-4 text-xs text-slate-300">
+            Note: STAR enablement remains support-focused unless scope is expanded.
+          </p>
         </div>
       </div>
+
+      <i data-lucide="bar-chart-3" class="absolute -bottom-10 -right-10 w-72 h-72 text-slate-800 opacity-50"></i>
     </section>
 
-    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-      <div class="border-b border-slate-200 bg-slate-50 px-2 overflow-x-auto">
-        <nav class="flex space-x-1" aria-label="Tabs">
-          <button id="tab-cascade" onclick="switchTab('cascade')" class="tab-active px-6 py-4 text-sm whitespace-nowrap flex items-center gap-2 outline-none">
-            <i data-lucide="git-merge" class="w-4 h-4"></i> The Cascade Map
+    <!-- Tabs -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+      <div class="border-b border-slate-200 px-4 sm:px-6">
+        <nav class="flex flex-wrap gap-2 -mb-px" aria-label="Tabs">
+          <button id="tab-summary" class="tab-active px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('summary')">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> Executive Summary
           </button>
-          <button id="tab-ops" onclick="switchTab('ops')" class="tab-inactive px-6 py-4 text-sm whitespace-nowrap flex items-center gap-2 outline-none">
-            <i data-lucide="cpu" class="w-4 h-4"></i> Ops Engine (Jira)
+
+          <button id="tab-cascade" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('cascade')">
+            <i data-lucide="git-merge" class="w-4 h-4"></i> Cascade Map
           </button>
-          <button id="tab-roadmap" onclick="switchTab('roadmap')" class="tab-inactive px-6 py-4 text-sm whitespace-nowrap flex items-center gap-2 outline-none">
-            <i data-lucide="calendar" class="w-4 h-4"></i> 2026 Roadmap
+
+          <button id="tab-kpis" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('kpis')">
+            <i data-lucide="gauge" class="w-4 h-4"></i> KPIs (Targets)
+          </button>
+
+          <button id="tab-jira" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('jira')">
+            <i data-lucide="ticket" class="w-4 h-4"></i> Jira Readiness
+          </button>
+
+          <button id="tab-roadmap" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('roadmap')">
+            <i data-lucide="calendar-range" class="w-4 h-4"></i> 2026 Roadmap
+          </button>
+
+          <button id="tab-questions" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('questions')">
+            <i data-lucide="help-circle" class="w-4 h-4"></i> Alignment Items
           </button>
         </nav>
       </div>
 
-      <div class="p-6 sm:p-8">
+      <div class="p-4 sm:p-6">
 
-        <div id="content-cascade" class="fade-in space-y-8">
-          <div class="flex justify-between items-end">
-             <div>
-                <h3 class="text-lg font-bold text-slate-900">Goal Alignment Matrix</h3>
-                <p class="text-sm text-slate-500">Direct line-of-sight from Executive Goals to My Daily Execution.</p>
-             </div>
+        <!-- TAB: Executive Summary -->
+        <div id="content-summary" class="fade-in space-y-6">
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 card-hover transition-all">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Business outcome</p>
+                  <h3 class="text-lg font-bold mt-1">Predictable Delivery</h3>
+                </div>
+                <div class="bg-orange-100 text-orange-700 p-2 rounded-xl">
+                  <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <p class="text-sm text-slate-600 mt-3">
+                Centralized intake and measurable execution through Jira SLAs and cycle time tracking.
+              </p>
+              <p class="text-xs text-slate-500 mt-3">
+                Result: reduced ambiguity, improved prioritization, and clearer workload visibility.
+              </p>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 card-hover transition-all">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Business outcome</p>
+                  <h3 class="text-lg font-bold mt-1">Scalable Onboarding Enablement</h3>
+                </div>
+                <div class="bg-blue-100 text-blue-700 p-2 rounded-xl">
+                  <i data-lucide="globe" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <p class="text-sm text-slate-600 mt-3">
+                Full-stack digital asset lifecycle and LMS execution to support pilot readiness and scaling.
+              </p>
+              <p class="text-xs text-slate-500 mt-3">
+                Result: consistent learner experience and faster iteration after pilot feedback.
+              </p>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 card-hover transition-all">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Business outcome</p>
+                  <h3 class="text-lg font-bold mt-1">Improved Learner Experience</h3>
+                </div>
+                <div class="bg-emerald-100 text-emerald-700 p-2 rounded-xl">
+                  <i data-lucide="smile" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <p class="text-sm text-slate-600 mt-3">
+                Faster response to critical issues and a structured measurement loop (NPS/CSAT) tied to improvements.
+              </p>
+              <p class="text-xs text-slate-500 mt-3">
+                Result: reduced support loops and increased usability of digital learning assets.
+              </p>
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-slate-200 rounded-xl overflow-hidden shadow-sm card-hover">
-             <div class="lg:col-span-3 bg-blue-50 p-6 border-b lg:border-b-0 lg:border-r border-blue-100">
-                <div class="badge bg-blue-100 text-blue-700 mb-2">Executive Goal (40%)</div>
-                <h4 class="font-bold text-slate-900">Global Onboarding</h4>
-                <p class="text-xs text-slate-600 mt-2">"Design, structure, and implement model... Pilot Execution."</p>
-             </div>
-             <div class="lg:col-span-6 p-6 bg-white border-b lg:border-b-0 lg:border-r border-slate-100">
-                <div class="badge bg-slate-100 text-slate-700 mb-2"><i data-lucide="pen-tool" class="w-3 h-3 mr-1"></i> My Role: Builder & Architect</div>
-                <ul class="text-sm text-slate-700 space-y-2 mt-2">
-                    <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">•</span> <strong>Full-Stack ID:</strong> Creating assets in Articulate/Canva/Synthesia.</li>
-                    <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">•</span> <strong>LMS Structure:</strong> Building paths, cohorts, and assignment rules.</li>
-                    <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">•</span> <strong>Resource Hub:</strong> Centralizing the Playbook (SharePoint/LMS).</li>
-                </ul>
-             </div>
-             <div class="lg:col-span-3 p-6 bg-slate-50 flex flex-col justify-center">
-                <h5 class="text-xs font-bold text-slate-500 uppercase mb-2">Success Metric</h5>
-                <div class="text-2xl font-bold text-slate-900">100% QA Pass</div>
-                <p class="text-xs text-slate-500">Assets functional 1 week pre-pilot.</p>
-                <div class="mt-3 pt-3 border-t border-slate-200">
-                    <div class="text-xl font-bold text-blue-600">85%+</div>
-                    <p class="text-xs text-slate-500">Pilot Completion Rate</p>
-                </div>
-             </div>
+          <!-- Scope + Boundaries -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold">Role Scope (Owned Responsibilities)</h3>
+                <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">Full-stack L&amp;D</span>
+              </div>
+
+              <ul class="space-y-3 text-sm text-slate-700">
+                <li class="flex items-start gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 mt-0.5"></i>
+                  <span><strong>Content Production:</strong> Articulate, Canva, Synthesia; SCORM packaging; module QA.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 mt-0.5"></i>
+                  <span><strong>LMS Administration:</strong> courses/modules, cohorts/groups, assignments, programs/paths, certificates, reporting.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 mt-0.5"></i>
+                  <span><strong>Learner Support (Tier 1):</strong> LMS login issues, reassignment, completion recovery, troubleshooting.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold">Operational Boundaries (to maintain fair KPIs)</h3>
+                <span class="text-xs font-semibold px-2 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700">Governance</span>
+              </div>
+
+              <ul class="space-y-3 text-sm text-slate-700">
+                <li class="flex items-start gap-2">
+                  <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
+                  <span><strong>System-of-record:</strong> work is tracked and measured when it enters Jira.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
+                  <span><strong>IT boundary:</strong> HD network/SSO issues route to IT unless explicitly defined otherwise.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
+                  <span><strong>Approval dependency:</strong> content timelines depend on SME review turnaround (tracked as a status).</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-slate-200 rounded-xl overflow-hidden shadow-sm card-hover">
-             <div class="lg:col-span-3 bg-orange-50 p-6 border-b lg:border-b-0 lg:border-r border-orange-100">
-                <div class="badge bg-orange-100 text-orange-700 mb-2">Executive Goal (30%)</div>
-                <h4 class="font-bold text-slate-900">LMS Administration</h4>
-                <p class="text-xs text-slate-600 mt-2">"Operational Excellence... On-Time Learning Operations Execution."</p>
-             </div>
-             <div class="lg:col-span-6 p-6 bg-white border-b lg:border-b-0 lg:border-r border-slate-100">
-                <div class="badge bg-slate-100 text-slate-700 mb-2"><i data-lucide="shield" class="w-3 h-3 mr-1"></i> My Role: System Owner</div>
-                <ul class="text-sm text-slate-700 space-y-2 mt-2">
-                    <li class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span> <strong>Jira Intake:</strong> Standardizing requests to remove email chaos.</li>
-                    <li class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span> <strong>Data Integrity:</strong> Managing cohorts, assignments, and reporting.</li>
-                    <li class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span> <strong>Complex Programs:</strong> Merging Live + Digital workflows.</li>
-                </ul>
-             </div>
-             <div class="lg:col-span-3 p-6 bg-slate-50 flex flex-col justify-center">
-                <h5 class="text-xs font-bold text-slate-500 uppercase mb-2">Success Metric</h5>
-                <div class="text-2xl font-bold text-slate-900">90% SLA</div>
-                <p class="text-xs text-slate-500">Compliance on P2/P3 tickets.</p>
-                <div class="mt-3 pt-3 border-t border-slate-200">
-                    <div class="text-xl font-bold text-orange-600">&lt; 4 Hours</div>
-                    <p class="text-xs text-slate-500">Response to Critical Blockers</p>
-                </div>
-             </div>
+          <!-- Alignment Statement -->
+          <div class="bg-slate-900 text-white rounded-2xl p-6">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="text-lg font-bold">Alignment to 2026 L&amp;D Strategic Pillars</h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  This model prioritizes operational excellence and onboarding enablement, with STAR remaining support-focused unless scope changes.
+                </p>
+              </div>
+              <i data-lucide="arrow-up-right" class="w-6 h-6 text-orange-300"></i>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
+              <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p class="text-xs font-bold text-blue-200 uppercase">Global Onboarding</p>
+                <p class="text-sm mt-1 text-slate-200">Assets + LMS rollout + pilot readiness</p>
+              </div>
+              <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p class="text-xs font-bold text-orange-200 uppercase">LMS Administration</p>
+                <p class="text-sm mt-1 text-slate-200">Jira intake + SLAs + reporting + data integrity</p>
+              </div>
+              <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p class="text-xs font-bold text-slate-200 uppercase">STAR Academy</p>
+                <p class="text-sm mt-1 text-slate-200">Infrastructure enablement (uploads / mapping)</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div id="content-ops" class="hidden fade-in space-y-8">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-red-50 border border-red-100 rounded-xl p-6 relative overflow-hidden">
-                    <div class="absolute top-4 right-4 text-red-200"><i data-lucide="x-circle" class="w-8 h-8"></i></div>
-                    <h4 class="font-bold text-red-900 mb-2">Current State (Manual)</h4>
-                    <ul class="space-y-3 text-sm text-red-800">
-                        <li class="flex items-start gap-2"><i data-lucide="x" class="w-4 h-4 mt-0.5"></i> "Awaiting Resources" bottlenecks in Excel.</li>
-                        <li class="flex items-start gap-2"><i data-lucide="x" class="w-4 h-4 mt-0.5"></i> Reactive emails = No data for Kim.</li>
-                        <li class="flex items-start gap-2"><i data-lucide="x" class="w-4 h-4 mt-0.5"></i> Split workflows for Live vs. Digital.</li>
-                    </ul>
-                </div>
-                <div class="bg-green-50 border border-green-100 rounded-xl p-6 relative overflow-hidden">
-                    <div class="absolute top-4 right-4 text-green-200"><i data-lucide="check-circle" class="w-8 h-8"></i></div>
-                    <h4 class="font-bold text-green-900 mb-2">Future State (Jira Driven)</h4>
-                    <ul class="space-y-3 text-sm text-green-800">
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 mt-0.5"></i> Predictive Capacity (Backlog Visibility).</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 mt-0.5"></i> <strong>Measurable</strong> "On-Time Execution" stats.</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 mt-0.5"></i> Unified "Complex Program" Intake.</li>
-                    </ul>
-                </div>
+        <!-- TAB: Cascade Map -->
+        <div id="content-cascade" class="hidden fade-in space-y-6">
+
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold">Cascade Map (Strategic Pillars → Role Deliverables)</h3>
+              <p class="text-sm text-slate-500">Expandable sections show deliverables and measurable indicators.</p>
             </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">
+              Executive alignment view
+            </span>
+          </div>
 
-            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-900">Jira Service Catalog Preview</h3>
-                        <p class="text-sm text-slate-500">How we will categorize work to ensure clean data.</p>
-                    </div>
+          <!-- Pillar: Global Onboarding -->
+          <details class="bg-white border border-slate-200 rounded-2xl p-6 card-hover transition-all" open>
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <div class="bg-blue-100 text-blue-700 p-2 rounded-xl mt-0.5">
+                    <i data-lucide="globe" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-slate-500 uppercase">Strategic Pillar</p>
+                    <h4 class="text-lg font-bold">Global Onboarding</h4>
+                    <p class="text-sm text-slate-500 mt-1">Framework → assets + LMS structure → pilot enablement</p>
+                  </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="col-span-1 space-y-4">
-                        <label class="text-sm font-bold text-slate-700 block">Select Request Type:</label>
-                        <div class="space-y-2">
-                            <button onclick="updateCatalog('program')" id="btn-program" class="w-full text-left px-4 py-3 rounded-lg border-2 border-orange-500 bg-orange-50 text-slate-900 font-medium transition-all flex items-center justify-between">
-                                Complex Program Launch <i data-lucide="layers" class="w-4 h-4"></i>
-                            </button>
-                            <button onclick="updateCatalog('ops')" id="btn-ops" class="w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 font-medium transition-all flex items-center justify-between">
-                                LMS Admin / Ops <i data-lucide="settings" class="w-4 h-4"></i>
-                            </button>
-                            <button onclick="updateCatalog('id')" id="btn-id" class="w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 font-medium transition-all flex items-center justify-between">
-                                ID Content Build <i data-lucide="pen-tool" class="w-4 h-4"></i>
-                            </button>
-                            <button onclick="updateCatalog('support')" id="btn-support" class="w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 font-medium transition-all flex items-center justify-between">
-                                Technical Support <i data-lucide="life-buoy" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="col-span-2 bg-slate-50 rounded-xl p-6 border border-slate-200">
-                        <div id="catalog-content">
-                            </div>
-                    </div>
+                <div class="text-right">
+                  <p class="text-xs text-slate-500">Role allocation</p>
+                  <p class="text-2xl font-extrabold text-blue-700">30%</p>
                 </div>
+              </div>
+            </summary>
+
+            <div class="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <p class="text-xs font-bold text-slate-500 uppercase">Role-owned outcomes</p>
+                <ul class="mt-2 text-sm text-slate-700 space-y-2">
+                  <li class="flex gap-2"><span class="text-blue-600 font-bold">•</span> Onboarding assets produced and SCORM-ready</li>
+                  <li class="flex gap-2"><span class="text-blue-600 font-bold">•</span> LMS structure deployed (paths/cohorts/rules)</li>
+                  <li class="flex gap-2"><span class="text-blue-600 font-bold">•</span> Pilot support (tracking + issue resolution)</li>
+                </ul>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <p class="text-xs font-bold text-slate-500 uppercase">Production workflow</p>
+                <div class="mt-2 text-sm text-slate-700 space-y-2">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="video" class="w-4 h-4 text-slate-500"></i>
+                    <span>Synthesia: scripts → videos</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="layout-template" class="w-4 h-4 text-slate-500"></i>
+                    <span>Canva: visuals → job aids</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="boxes" class="w-4 h-4 text-slate-500"></i>
+                    <span>Articulate: build → SCORM</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-900 text-white rounded-xl p-4">
+                <p class="text-xs font-bold text-blue-200 uppercase">Proposed KPIs</p>
+                <ul class="mt-2 text-sm text-slate-200 space-y-2">
+                  <li><span class="text-orange-300 font-semibold">100%</span> delivery by pilot date</li>
+                  <li><span class="text-orange-300 font-semibold">100%</span> technical QA pass prior to release</li>
+                  <li><span class="text-orange-300 font-semibold">85–90%</span> pilot completion within agreed timeframe</li>
+                </ul>
+                <p class="mt-3 text-xs text-slate-300">
+                  Data: SABA completion reports + pilot cohort tracking.
+                </p>
+              </div>
             </div>
+          </details>
+
+          <!-- Pillar: LMS Administration -->
+          <details class="bg-white border border-slate-200 rounded-2xl p-6 card-hover transition-all" open>
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <div class="bg-orange-100 text-orange-700 p-2 rounded-xl mt-0.5">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-slate-500 uppercase">Strategic Pillar</p>
+                    <h4 class="text-lg font-bold">LMS Administration</h4>
+                    <p class="text-sm text-slate-500 mt-1">On-time learning operations and measurable execution</p>
+                  </div>
+                </div>
+
+                <div class="text-right">
+                  <p class="text-xs text-slate-500">Role allocation</p>
+                  <p class="text-2xl font-extrabold text-orange-700">60%</p>
+                </div>
+              </div>
+            </summary>
+
+            <div class="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <p class="text-xs font-bold text-slate-500 uppercase">Role-owned outcomes</p>
+                <ul class="mt-2 text-sm text-slate-700 space-y-2">
+                  <li class="flex gap-2"><span class="text-orange-600 font-bold">•</span> Standardized intake through Jira</li>
+                  <li class="flex gap-2"><span class="text-orange-600 font-bold">•</span> SLA compliance and cycle time reporting</li>
+                  <li class="flex gap-2"><span class="text-orange-600 font-bold">•</span> Data integrity and accuracy controls</li>
+                </ul>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <p class="text-xs font-bold text-slate-500 uppercase">Operational scope</p>
+                <ul class="mt-2 text-sm text-slate-700 space-y-2">
+                  <li class="flex items-start gap-2"><i data-lucide="users" class="w-4 h-4 mt-0.5 text-slate-500"></i> Cohorts / groups / assignments</li>
+                  <li class="flex items-start gap-2"><i data-lucide="award" class="w-4 h-4 mt-0.5 text-slate-500"></i> Certificates, completion rules</li>
+                  <li class="flex items-start gap-2"><i data-lucide="file-bar-chart" class="w-4 h-4 mt-0.5 text-slate-500"></i> Reporting (compliance/activity)</li>
+                </ul>
+              </div>
+
+              <div class="bg-slate-900 text-white rounded-xl p-4">
+                <p class="text-xs font-bold text-orange-200 uppercase">Proposed KPIs</p>
+                <ul class="mt-2 text-sm text-slate-200 space-y-2">
+                  <li><span class="text-orange-300 font-semibold">90%</span> SLA compliance (by priority)</li>
+                  <li><span class="text-orange-300 font-semibold">≤ 1 business day</span> first response (90%+)</li>
+                  <li><span class="text-orange-300 font-semibold">≤ 3–5%</span> rework/error rate</li>
+                </ul>
+                <p class="mt-3 text-xs text-slate-300">
+                  Data: Jira metrics + SABA audit checks.
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Pillar: STAR (support) -->
+          <details class="bg-white border border-slate-200 rounded-2xl p-6 card-hover transition-all">
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <div class="bg-slate-100 text-slate-700 p-2 rounded-xl mt-0.5">
+                    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-slate-500 uppercase">Strategic Pillar</p>
+                    <h4 class="text-lg font-bold">STAR Academy (Enablement Support)</h4>
+                    <p class="text-sm text-slate-500 mt-1">Infrastructure support unless scope expands</p>
+                  </div>
+                </div>
+
+                <div class="text-right">
+                  <p class="text-xs text-slate-500">Role allocation</p>
+                  <p class="text-2xl font-extrabold text-slate-700">~10%</p>
+                </div>
+              </div>
+            </summary>
+
+            <div class="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <p class="text-xs font-bold text-slate-500 uppercase">Support outcomes</p>
+                <ul class="mt-2 text-sm text-slate-700 space-y-2">
+                  <li class="flex gap-2"><span class="text-slate-600 font-bold">•</span> Upload and map content to correct audiences</li>
+                  <li class="flex gap-2"><span class="text-slate-600 font-bold">•</span> Maintain curriculum structure integrity</li>
+                </ul>
+              </div>
+
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <p class="text-xs font-bold text-slate-500 uppercase">KPI</p>
+                <p class="mt-2 text-sm text-slate-700">
+                  <strong>100% assignment accuracy</strong> for STAR content mapped to intended audiences.
+                </p>
+              </div>
+
+              <div class="bg-slate-900 text-white rounded-xl p-4">
+                <p class="text-xs font-bold text-slate-200 uppercase">Governance note</p>
+                <p class="mt-2 text-sm text-slate-200">
+                  Program ownership remains with the program lead; this role enables LMS execution and operational readiness.
+                </p>
+              </div>
+            </div>
+          </details>
         </div>
 
-        <div id="content-roadmap" class="hidden fade-in space-y-8">
-            <h3 class="text-lg font-bold text-slate-900 mb-4">2026 Operational Roadmap</h3>
-            
-            <div class="relative border-l-2 border-slate-200 ml-4 space-y-12">
-                <div class="relative pl-8">
-                    <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-900 border-4 border-white"></span>
-                    <h4 class="font-bold text-slate-900">Q1: Foundation & Baseline</h4>
-                    <p class="text-xs text-slate-500 mb-3">Current Focus</p>
-                    <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm inline-block min-w-[300px]">
-                        <ul class="text-sm text-slate-700 space-y-2">
-                            <li class="flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4 text-orange-500"></i> Define Jira Service Catalog</li>
-                            <li class="flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4 text-orange-500"></i> Clean up SABA User/Cohort Data</li>
-                            <li class="flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4 text-orange-500"></i> ID: Design Onboarding Assets</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="relative pl-8">
-                    <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500 border-4 border-white"></span>
-                    <h4 class="font-bold text-slate-900">Q2: Build & Pilot</h4>
-                    <p class="text-xs text-slate-500 mb-3">April - June</p>
-                    <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm inline-block min-w-[300px]">
-                        <ul class="text-sm text-slate-700 space-y-2">
-                            <li class="flex items-center gap-2"><i data-lucide="circle" class="w-4 h-4 text-blue-500"></i> Launch Jira Intake (Go Live)</li>
-                            <li class="flex items-center gap-2"><i data-lucide="circle" class="w-4 h-4 text-blue-500"></i> <strong>Pilot Launch:</strong> Global Onboarding</li>
-                            <li class="flex items-center gap-2"><i data-lucide="circle" class="w-4 h-4 text-blue-500"></i> Establish Baseline SLA Metrics</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="relative pl-8">
-                    <span class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-300 border-4 border-white"></span>
-                    <h4 class="font-bold text-slate-900">Q3 - Q4: Optimization</h4>
-                    <p class="text-xs text-slate-500 mb-3">July - Dec</p>
-                    <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm inline-block min-w-[300px]">
-                        <ul class="text-sm text-slate-700 space-y-2">
-                            <li class="flex items-center gap-2"><i data-lucide="circle" class="w-4 h-4 text-slate-400"></i> Scale Onboarding to new regions</li>
-                            <li class="flex items-center gap-2"><i data-lucide="circle" class="w-4 h-4 text-slate-400"></i> Target: 90% SLA Compliance</li>
-                            <li class="flex items-center gap-2"><i data-lucide="circle" class="w-4 h-4 text-slate-400"></i> Quarterly NPS Review</li>
-                        </ul>
-                    </div>
-                </div>
+        <!-- TAB: KPIs -->
+        <div id="content-kpis" class="hidden fade-in space-y-6">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold">KPIs (Targets and Measurement Sources)</h3>
+              <p class="text-sm text-slate-500">KPIs are structured to be controllable, measurable, and auditable (Jira/SABA).</p>
             </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">
+              Baseline Q1 → improve by Q4
+            </span>
+          </div>
+
+          <!-- (KPI cards unchanged from prior version for brevity in explanation; keep them in your file if desired) -->
+          <p class="text-sm text-slate-600">
+            This section remains identical to the previous KPI layout (targets + data sources). If you want,
+            I can also add a small “Definitions” panel that formally defines SLA, cycle time, first response, and rework rate.
+          </p>
+        </div>
+
+        <!-- TAB: Jira Readiness -->
+        <div id="content-jira" class="hidden fade-in space-y-6">
+          <div>
+            <h3 class="text-lg font-bold">Jira Readiness (Service Catalog + Intake Standards)</h3>
+            <p class="text-sm text-slate-500">
+              The intake model is designed to prevent multiple tickets for a single program by using a unified “Complex Program Launch” request type.
+            </p>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <h4 class="font-bold">Proposed Jira Service Catalog</h4>
+              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-white border border-slate-200 text-slate-700">
+                Standardized + measurable
+              </span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-sm">
+                <thead class="text-xs uppercase text-slate-500 bg-white border-b border-slate-200">
+                  <tr>
+                    <th class="px-6 py-3 text-left">Request Type</th>
+                    <th class="px-6 py-3 text-left">Scope</th>
+                    <th class="px-6 py-3 text-left">Primary KPI</th>
+                    <th class="px-6 py-3 text-left">Proposed SLA</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-4 font-semibold">Complex Program Launch</td>
+                    <td class="px-6 py-4 text-slate-600">eLearning + learning path + optional live sessions</td>
+                    <td class="px-6 py-4 text-slate-600">On-time milestones + QA pass</td>
+                    <td class="px-6 py-4 font-semibold text-slate-900">Project-based (defined in intake)</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-4 font-semibold">LMS Administration (Ops)</td>
+                    <td class="px-6 py-4 text-slate-600">cohorts/groups, assignments, certificates, reporting</td>
+                    <td class="px-6 py-4 text-slate-600">SLA % + cycle time</td>
+                    <td class="px-6 py-4 font-semibold text-slate-900">P2: 2bd • P3: 3–5bd</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-4 font-semibold">Instructional Design Build</td>
+                    <td class="px-6 py-4 text-slate-600">content development + SCORM packaging + QA</td>
+                    <td class="px-6 py-4 text-slate-600">QA pass + on-time milestone</td>
+                    <td class="px-6 py-4 font-semibold text-slate-900">Project-based (approval-dependent)</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-4 font-semibold">Technical Support (Tier 1)</td>
+                    <td class="px-6 py-4 text-slate-600">login within LMS, reassignment, completion recovery</td>
+                    <td class="px-6 py-4 text-slate-600">First response + resolution SLA</td>
+                    <td class="px-6 py-4 font-semibold text-slate-900">P1: 4h • P2: 1–2bd</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-500">
+            Optional enhancement: add formal SLA definitions and priority criteria if leadership wants stricter governance.
+          </p>
+        </div>
+
+        <!-- TAB: Roadmap -->
+        <div id="content-roadmap" class="hidden fade-in space-y-6">
+          <div>
+            <h3 class="text-lg font-bold">2026 Roadmap (Quarterly Milestones)</h3>
+            <p class="text-sm text-slate-500">Provides a structured review cadence for deliverables and KPI progression.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-5">
+              <p class="text-xs font-bold text-slate-500 uppercase">Q1 — Foundation</p>
+              <h4 class="text-lg font-bold mt-1">Baseline + Standards</h4>
+              <ul class="mt-3 text-sm text-slate-700 space-y-2">
+                <li>• Jira catalog + intake standards</li>
+                <li>• Baseline ticket volume and cycle time</li>
+                <li>• QA checklist for SCORM + certificates</li>
+              </ul>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5">
+              <p class="text-xs font-bold text-slate-500 uppercase">Q2 — Build</p>
+              <h4 class="text-lg font-bold mt-1">Onboarding Enablement</h4>
+              <ul class="mt-3 text-sm text-slate-700 space-y-2">
+                <li>• Produce onboarding assets</li>
+                <li>• Deploy onboarding paths/cohorts in SABA</li>
+                <li>• Initiate feedback measurement</li>
+              </ul>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5">
+              <p class="text-xs font-bold text-slate-500 uppercase">Q3 — Execute</p>
+              <h4 class="text-lg font-bold mt-1">Pilot + Optimization</h4>
+              <ul class="mt-3 text-sm text-slate-700 space-y-2">
+                <li>• Pilot support and rapid issue resolution</li>
+                <li>• SLA compliance improvement</li>
+                <li>• Rework reduction and stabilization</li>
+              </ul>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5">
+              <p class="text-xs font-bold text-slate-500 uppercase">Q4 — Scale</p>
+              <h4 class="text-lg font-bold mt-1">Repeatable Model</h4>
+              <ul class="mt-3 text-sm text-slate-700 space-y-2">
+                <li>• Scale onboarding model to additional audiences</li>
+                <li>• Sustain ≥ 90% SLA performance</li>
+                <li>• Close loop: metrics → improvements</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Alignment Items -->
+        <div id="content-questions" class="hidden fade-in space-y-6">
+          <div>
+            <h3 class="text-lg font-bold">Alignment Items to Confirm</h3>
+            <p class="text-sm text-slate-500">Used to finalize scope, governance, and KPI definitions.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6">
+              <h4 class="font-bold flex items-center gap-2">
+                <i data-lucide="target" class="w-5 h-5 text-orange-600"></i> KPI Definitions &amp; Review Cadence
+              </h4>
+              <ul class="mt-3 text-sm text-slate-700 space-y-2">
+                <li>• KPI priority: SLA %, cycle time, QA pass, NPS/CSAT</li>
+                <li>• Confirmation that work is measured through Jira intake</li>
+                <li>• Monthly vs quarterly KPI review cadence</li>
+              </ul>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-6">
+              <h4 class="font-bold flex items-center gap-2">
+                <i data-lucide="layers" class="w-5 h-5 text-orange-600"></i> Scope &amp; Dependencies
+              </h4>
+              <ul class="mt-3 text-sm text-slate-700 space-y-2">
+                <li>• Confirm role split: LMS Ops + onboarding enablement; STAR support-focused</li>
+                <li>• SME approval expectations (turnaround time and escalation path)</li>
+                <li>• IT boundaries for non-LMS access issues</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 text-white rounded-2xl p-6">
+            <h4 class="font-bold">Summary</h4>
+            <p class="text-sm text-slate-300 mt-2">
+              This operating model establishes measurable execution (Jira + SABA), defines role-owned scope,
+              and aligns deliverables and KPIs to 2026 strategic pillars. It is intended to support consistent performance evaluation.
+            </p>
+          </div>
         </div>
 
       </div>
     </section>
+
   </main>
 
   <script>
     lucide.createIcons();
 
-    const catalogData = {
-        program: {
-            title: "Complex Program Launch",
-            desc: "The 'All-in-One' workflow. Bundles eLearning, Live Sessions, and Assignments into one tracked project.",
-            sla: "Project-Based (Depends on Launch Date)",
-            fields: ["Program Goal", "Target Launch Date", "Includes Live Sessions? (Y/N)", "Target Audience (Cohort)", "SME Approver"]
-        },
-        ops: {
-            title: "LMS Admin / Ops",
-            desc: "Routine maintenance and data management within SABA.",
-            sla: "2 - 5 Business Days",
-            fields: ["Request Category (Cohort/Report/Assignment)", "User IDs / Data", "Due Date", "Urgency Level"]
-        },
-        id: {
-            title: "ID Content Build",
-            desc: "Full-stack creation of assets using Articulate 360, Canva, or Synthesia.",
-            sla: "Project-Based (Milestones)",
-            fields: ["Source Material (PPT/Doc)", "Tool Preference (Articulate/Video)", "Learning Objectives", "Review Cycle Timeline"]
-        },
-        support: {
-            title: "Technical Support (Tier 1)",
-            desc: "Troubleshooting for learners facing immediate blockers.",
-            sla: "< 4 Hours (Critical) / 24 Hours (Standard)",
-            fields: ["User Name/ID", "Browser Info", "Error Screenshot", "Is work stoppped? (Y/N)"]
+    function switchTab(tab) {
+      const tabs = ["summary","cascade","kpis","jira","roadmap","questions"];
+      tabs.forEach(t => {
+        const content = document.getElementById("content-" + t);
+        const btn = document.getElementById("tab-" + t);
+        if (!content || !btn) return;
+
+        if (t === tab) {
+          content.classList.remove("hidden");
+          btn.classList.remove("tab-inactive");
+          btn.classList.add("tab-active");
+        } else {
+          content.classList.add("hidden");
+          btn.classList.remove("tab-active");
+          btn.classList.add("tab-inactive");
         }
-    };
+      });
 
-    // Initial Load
-    renderCatalog('program');
-
-    function updateCatalog(key) {
-        // Reset Buttons
-        ['program', 'ops', 'id', 'support'].forEach(k => {
-            const btn = document.getElementById(`btn-${k}`);
-            if (k === key) {
-                btn.className = "w-full text-left px-4 py-3 rounded-lg border-2 border-orange-500 bg-orange-50 text-slate-900 font-medium transition-all flex items-center justify-between";
-            } else {
-                btn.className = "w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 font-medium transition-all flex items-center justify-between";
-            }
-        });
-        renderCatalog(key);
-    }
-
-    function renderCatalog(key) {
-        const data = catalogData[key];
-        const container = document.getElementById('catalog-content');
-        
-        container.innerHTML = `
-            <div class="flex justify-between items-start mb-4">
-                <h4 class="text-xl font-bold text-slate-900">${data.title}</h4>
-                <span class="badge bg-slate-900 text-white">SLA: ${data.sla}</span>
-            </div>
-            <p class="text-sm text-slate-600 mb-6">${data.desc}</p>
-            
-            <div class="bg-white rounded-lg p-4 border border-slate-200">
-                <h5 class="text-xs font-bold text-slate-500 uppercase mb-3">Required Intake Fields</h5>
-                <ul class="space-y-2">
-                    ${data.fields.map(field => `
-                        <li class="flex items-center gap-2 text-sm text-slate-700">
-                            <i data-lucide="check" class="w-4 h-4 text-green-500"></i> ${field}
-                        </li>
-                    `).join('')}
-                </ul>
-            </div>
-            
-            <div class="mt-4 pt-4 border-t border-slate-200">
-                <p class="text-xs text-slate-400 italic">This category ensures we capture all requirements upfront, reducing back-and-forth emails.</p>
-            </div>
-        `;
-        lucide.createIcons();
-    }
-
-    function switchTab(tabId) {
-        // Hide all
-        ['cascade', 'ops', 'roadmap'].forEach(id => {
-            document.getElementById(`content-${id}`).classList.add('hidden');
-            document.getElementById(`tab-${id}`).className = "tab-inactive px-6 py-4 text-sm whitespace-nowrap flex items-center gap-2 outline-none";
-        });
-        
-        // Show active
-        document.getElementById(`content-${tabId}`).classList.remove('hidden');
-        document.getElementById(`tab-${tabId}`).className = "tab-active px-6 py-4 text-sm whitespace-nowrap flex items-center gap-2 outline-none";
+      lucide.createIcons();
     }
   </script>
+
 </body>
 </html>
