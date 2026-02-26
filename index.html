@@ -14,14 +14,22 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
     body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
-    .fade-in { animation: fadeIn .35s ease-out; }
+    .fade-in { animation: fadeIn .25s ease-out; }
     @keyframes fadeIn { from { opacity:0; transform: translateY(6px);} to {opacity:1; transform: translateY(0);} }
+
     .tab-active { border-bottom: 2px solid #f97316; color:#f97316; font-weight:600; background:#fff7ed; }
     .tab-inactive { color:#64748b; }
     .tab-inactive:hover { color:#0f172a; background:#f8fafc; }
+
     .card-hover:hover { transform: translateY(-1px); box-shadow: 0 10px 18px -12px rgba(0,0,0,.25); }
     .pill { border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.08); }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    /* Modal */
+    .modal-backdrop { background: rgba(15, 23, 42, 0.55); }
+
+    /* Guided tour highlight */
+    .tour-highlight { outline: 3px solid rgba(249,115,22,0.65); outline-offset: 6px; border-radius: 14px; }
   </style>
 </head>
 
@@ -42,8 +50,8 @@
             </p>
             <p class="text-xs text-slate-500 mt-0.5">
               <span class="font-semibold text-slate-600">Prepared for:</span> L&amp;D Leadership &nbsp;•&nbsp;
-              <span class="font-semibold text-slate-600">Prepared by:</span> Jorge A Gonzalez &nbsp;•&nbsp;
-              <span class="font-semibold text-slate-600">Date:</span> Feb 17, 2026
+              <span class="font-semibold text-slate-600">Prepared by:</span> <span id="hdrPreparedBy">Jorge A Gonzalez</span> &nbsp;•&nbsp;
+              <span class="font-semibold text-slate-600">Date:</span> <span id="hdrDate">Feb 17, 2026</span>
             </p>
           </div>
         </div>
@@ -55,6 +63,13 @@
             title="Print / Save as PDF"
           >
             <i data-lucide="printer" class="w-4 h-4"></i> Print / PDF
+          </button>
+
+          <button id="btnTour"
+            class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-orange-200 bg-orange-50 text-sm font-semibold text-orange-700 hover:bg-orange-100"
+            title="Guided review"
+          >
+            <i data-lucide="sparkles" class="w-4 h-4"></i> Guided Review
           </button>
 
           <span class="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800 text-xs font-semibold">
@@ -69,14 +84,13 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
     <!-- Executive Hero -->
-    <section class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+    <section id="hero" class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
       <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
           <h2 class="text-2xl sm:text-3xl font-bold mb-3">Purpose of this Overview</h2>
           <p class="text-slate-200 leading-relaxed mb-4">
             This document provides a clear <span class="text-orange-300 font-semibold">line-of-sight cascade</span> from the 2026 L&amp;D strategic pillars
-            to role-owned deliverables and measurable performance indicators.
-            It is designed to support goal alignment, scope clarity, and performance measurement consistency.
+            to role-owned deliverables and measurable performance indicators. It is designed to support goal alignment, scope clarity, and performance measurement consistency.
           </p>
 
           <div class="flex flex-wrap gap-2">
@@ -86,43 +100,47 @@
             <span class="pill px-3 py-1.5 rounded-full text-xs font-semibold">Quarterly Roadmap</span>
             <span class="pill px-3 py-1.5 rounded-full text-xs font-semibold">MBO Worksheet (Template-aligned)</span>
           </div>
+
+          <div class="mt-4 text-xs text-slate-300">
+            <span class="font-semibold text-orange-200">Data note:</span>
+            this page uses local browser storage for drafts; export JSON/CSV to persist beyond cookies/storage resets. :contentReference[oaicite:2]{index=2}
+          </div>
         </div>
 
         <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
           <div class="flex items-center justify-between mb-3">
-            <h3 class="font-bold">Proposed 2026 Focus Allocation</h3>
+            <h3 class="font-bold">Focus Allocation (from Worksheet)</h3>
             <i data-lucide="pie-chart" class="w-5 h-5 text-orange-300"></i>
           </div>
 
-          <!-- Note: these update automatically based on worksheet weights -->
           <div class="space-y-3 text-sm">
             <div>
               <div class="flex justify-between text-slate-200 mb-1">
-                <span class="font-semibold">LMS Operations</span>
-                <span class="font-bold" id="heroWeightOps">60%</span>
+                <span class="font-semibold">LMS Ops</span>
+                <span class="font-bold" id="heroWeightOps">—</span>
               </div>
               <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                <div class="h-2 bg-orange-500" id="heroBarOps" style="width:60%"></div>
+                <div class="h-2 bg-orange-500" id="heroBarOps" style="width:0%"></div>
               </div>
             </div>
 
             <div>
               <div class="flex justify-between text-slate-200 mb-1">
-                <span class="font-semibold">Global Onboarding</span>
-                <span class="font-bold" id="heroWeightOnb">30%</span>
+                <span class="font-semibold">Onboarding</span>
+                <span class="font-bold" id="heroWeightOnb">—</span>
               </div>
               <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                <div class="h-2 bg-blue-500" id="heroBarOnb" style="width:30%"></div>
+                <div class="h-2 bg-blue-500" id="heroBarOnb" style="width:0%"></div>
               </div>
             </div>
 
             <div>
               <div class="flex justify-between text-slate-200 mb-1">
-                <span class="font-semibold">ID / Learner Experience</span>
-                <span class="font-bold" id="heroWeightIdUx">10%</span>
+                <span class="font-semibold">ID / Experience</span>
+                <span class="font-bold" id="heroWeightIdUx">—</span>
               </div>
               <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                <div class="h-2 bg-emerald-500" id="heroBarIdUx" style="width:10%"></div>
+                <div class="h-2 bg-emerald-500" id="heroBarIdUx" style="width:0%"></div>
               </div>
             </div>
           </div>
@@ -153,7 +171,7 @@
           </button>
 
           <button id="tab-kpis" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('kpis')">
-            <i data-lucide="gauge" class="w-4 h-4"></i> KPIs (Targets)
+            <i data-lucide="gauge" class="w-4 h-4"></i> KPI Targets
           </button>
 
           <button id="tab-jira" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('jira')">
@@ -161,7 +179,7 @@
           </button>
 
           <button id="tab-roadmap" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('roadmap')">
-            <i data-lucide="calendar-range" class="w-4 h-4"></i> 2026 Roadmap
+            <i data-lucide="calendar-range" class="w-4 h-4"></i> Roadmap
           </button>
 
           <button id="tab-questions" class="tab-inactive px-4 py-3 rounded-t-xl text-sm inline-flex items-center gap-2" onclick="switchTab('questions')">
@@ -174,116 +192,28 @@
 
         <!-- TAB: Executive Summary -->
         <div id="content-summary" class="fade-in space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 card-hover transition-all">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Business outcome</p>
-                  <h3 class="text-lg font-bold mt-1">Predictable Delivery</h3>
-                </div>
-                <div class="bg-orange-100 text-orange-700 p-2 rounded-xl">
-                  <i data-lucide="clock" class="w-5 h-5"></i>
-                </div>
-              </div>
-              <p class="text-sm text-slate-600 mt-3">
-                Centralized intake and measurable execution through Jira SLAs and cycle time tracking.
-              </p>
-              <p class="text-xs text-slate-500 mt-3">
-                Result: reduced ambiguity, improved prioritization, and clearer workload visibility.
-              </p>
-            </div>
 
-            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 card-hover transition-all">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Business outcome</p>
-                  <h3 class="text-lg font-bold mt-1">Scalable Onboarding Enablement</h3>
-                </div>
-                <div class="bg-blue-100 text-blue-700 p-2 rounded-xl">
-                  <i data-lucide="globe" class="w-5 h-5"></i>
-                </div>
-              </div>
-              <p class="text-sm text-slate-600 mt-3">
-                Full-stack digital asset lifecycle and LMS execution to support pilot readiness and scaling.
-              </p>
-              <p class="text-xs text-slate-500 mt-3">
-                Result: consistent learner experience and faster iteration after pilot feedback.
-              </p>
+          <!-- Business Outcomes (dynamic, color-aligned to MBO categories) -->
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-bold">Business Outcomes (by MBO)</h3>
+              <p class="text-sm text-slate-500">Aligned to the goals in the MBO Worksheet. Click a card to view details.</p>
             </div>
-
-            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 card-hover transition-all">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Business outcome</p>
-                  <h3 class="text-lg font-bold mt-1">Improved Learner Experience</h3>
-                </div>
-                <div class="bg-emerald-100 text-emerald-700 p-2 rounded-xl">
-                  <i data-lucide="smile" class="w-5 h-5"></i>
-                </div>
-              </div>
-              <p class="text-sm text-slate-600 mt-3">
-                Faster response to critical issues and a structured measurement loop (NPS/CSAT) tied to improvements.
-              </p>
-              <p class="text-xs text-slate-500 mt-3">
-                Result: reduced support loops and increased usability of digital learning assets.
-              </p>
-            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">Interactive</span>
           </div>
 
-          <!-- Scope + Boundaries -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div class="bg-white border border-slate-200 rounded-2xl p-6">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold">Role Scope (Owned Responsibilities)</h3>
-                <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">Full-stack L&amp;D</span>
-              </div>
+          <div id="outcomesGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-4"></div>
 
-              <ul class="space-y-3 text-sm text-slate-700">
-                <li class="flex items-start gap-2">
-                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 mt-0.5"></i>
-                  <span><strong>Content Production:</strong> Articulate, Canva, Synthesia; SCORM packaging; module QA.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 mt-0.5"></i>
-                  <span><strong>LMS Administration:</strong> courses/modules, cohorts/groups, assignments, programs/paths, certificates, reporting.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 mt-0.5"></i>
-                  <span><strong>Learner Support (Tier 1):</strong> LMS login issues, reassignment, completion recovery, troubleshooting.</span>
-                </li>
-              </ul>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-2xl p-6">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold">Operational Boundaries (to maintain fair KPIs)</h3>
-                <span class="text-xs font-semibold px-2 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700">Governance</span>
-              </div>
-
-              <ul class="space-y-3 text-sm text-slate-700">
-                <li class="flex items-start gap-2">
-                  <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
-                  <span><strong>System-of-record:</strong> work is tracked and measured when it enters Jira.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
-                  <span><strong>IT boundary:</strong> HD network/SSO issues route to IT unless explicitly defined otherwise.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
-                  <span><strong>Approval dependency:</strong> content timelines depend on SME review turnaround (tracked as a status).</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <!-- Scope (clickable) -->
+          <div id="scopeBlock" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
 
           <!-- Alignment Statement -->
-          <div class="bg-slate-900 text-white rounded-2xl p-6">
+          <div class="bg-slate-900 text-white rounded-2xl p-6" id="alignmentStatement">
             <div class="flex items-start justify-between gap-3">
               <div>
-                <h3 class="text-lg font-bold">Alignment to 2026 L&amp;D Strategic Pillars</h3>
+                <h3 class="text-lg font-bold">Strategic Alignment Summary</h3>
                 <p class="text-sm text-slate-300 mt-1">
-                  This model prioritizes operational excellence and onboarding enablement, with STAR remaining support-focused unless scope changes.
+                  The structure below ensures objectives are measurable, controllable, and tied to operational execution and onboarding enablement.
                 </p>
               </div>
               <i data-lucide="arrow-up-right" class="w-6 h-6 text-orange-300"></i>
@@ -291,29 +221,56 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
               <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                <p class="text-xs font-bold text-blue-200 uppercase">Global Onboarding</p>
-                <p class="text-sm mt-1 text-slate-200">Assets + LMS rollout + pilot readiness</p>
+                <p class="text-xs font-bold text-orange-200 uppercase">LMS Ops</p>
+                <p class="text-sm mt-1 text-slate-200">Intake → execution → reporting</p>
               </div>
               <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                <p class="text-xs font-bold text-orange-200 uppercase">LMS Administration</p>
-                <p class="text-sm mt-1 text-slate-200">Jira intake + SLAs + reporting + data integrity</p>
+                <p class="text-xs font-bold text-blue-200 uppercase">Onboarding</p>
+                <p class="text-sm mt-1 text-slate-200">Assets → LMS structure → pilot support</p>
               </div>
               <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                <p class="text-xs font-bold text-slate-200 uppercase">STAR Academy</p>
-                <p class="text-sm mt-1 text-slate-200">Infrastructure enablement (uploads / mapping)</p>
+                <p class="text-xs font-bold text-emerald-200 uppercase">Instructional Design</p>
+                <p class="text-sm mt-1 text-slate-200">Quality → localization readiness → adoption</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- TAB: MBO Worksheet (Template-Aligned) -->
+        <!-- TAB: MBO Worksheet -->
         <div id="content-worksheet" class="hidden fade-in space-y-6">
+
+          <!-- Profiles -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-5" id="profilesPanel">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-lg font-bold">Profiles (Multi-Employee Drafts)</h3>
+                <p class="text-sm text-slate-500">
+                  Save drafts for multiple team members locally. Export JSON/CSV to store in SharePoint/OneDrive.
+                </p>
+              </div>
+              <div class="flex flex-wrap gap-2 items-center">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase">Active Profile</span>
+                  <select id="profileSelect" class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold bg-white"></select>
+                </div>
+                <button id="btnNewProfile" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50">
+                  <i data-lucide="user-plus" class="w-4 h-4"></i> New
+                </button>
+                <button id="btnDuplicateProfile" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50">
+                  <i data-lucide="copy" class="w-4 h-4"></i> Duplicate
+                </button>
+                <button id="btnDeleteProfile" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-sm font-semibold text-red-700 hover:bg-red-100">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i> Delete
+                </button>
+              </div>
+            </div>
+          </div>
 
           <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
             <div>
               <h3 class="text-lg font-bold">MBO Individual Objective Worksheet (Draft)</h3>
               <p class="text-sm text-slate-500">
-                Structured to match the template requirements: 3–4 objectives, weights, measurable outcomes, quarterly monitoring, and end-of-year scoring.
+                Template-aligned: 3–4 objectives, weights, measurable outcomes, quarterly monitoring, end-of-year scoring.
               </p>
             </div>
 
@@ -323,9 +280,14 @@
                 <i data-lucide="save" class="w-4 h-4"></i> Save
               </button>
 
-              <button id="btnExport"
+              <button id="btnExportJSON"
                 class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50">
                 <i data-lucide="download" class="w-4 h-4"></i> Export JSON
+              </button>
+
+              <button id="btnExportCSV"
+                class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50">
+                <i data-lucide="table" class="w-4 h-4"></i> Export CSV
               </button>
 
               <label
@@ -336,7 +298,7 @@
 
               <button id="btnReset"
                 class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-red-200 bg-red-50 text-sm font-semibold text-red-700 hover:bg-red-100">
-                <i data-lucide="trash-2" class="w-4 h-4"></i> Reset
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset
               </button>
             </div>
           </div>
@@ -389,13 +351,13 @@
                 <div class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3">
                   <div class="text-xs text-slate-500 uppercase font-bold">Autosave</div>
                   <div class="text-sm font-semibold text-slate-900 mt-1" id="autosaveStatus">Active</div>
-                  <div class="text-xs text-slate-500 mt-1">Changes save locally in this browser.</div>
+                  <div class="text-xs text-slate-500 mt-1">Saves locally in this browser.</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Goals Container -->
+          <!-- Goals -->
           <div id="goalsContainer" class="space-y-6"></div>
 
           <!-- Totals / Scoring -->
@@ -405,12 +367,12 @@
               <p class="text-sm text-slate-500 mt-1">Total weight should equal <strong>100%</strong>.</p>
               <div class="mt-4 flex items-center justify-between">
                 <span class="text-sm font-semibold text-slate-700">Total</span>
-                <span class="text-2xl font-extrabold" id="totalWeight">100%</span>
+                <span class="text-2xl font-extrabold" id="totalWeight">—</span>
               </div>
               <div class="mt-3 h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div class="h-2 bg-emerald-500" id="totalWeightBar" style="width:100%"></div>
+                <div class="h-2 bg-emerald-500" id="totalWeightBar" style="width:0%"></div>
               </div>
-              <p class="text-xs text-slate-500 mt-3" id="weightHint">On target.</p>
+              <p class="text-xs text-slate-500 mt-3" id="weightHint">—</p>
             </div>
 
             <div class="bg-white border border-slate-200 rounded-2xl p-6">
@@ -426,7 +388,7 @@
             </div>
 
             <div class="bg-slate-900 text-white rounded-2xl p-6">
-              <h4 class="font-bold">Scoring Guidance (Formal)</h4>
+              <h4 class="font-bold">Scoring Guidance</h4>
               <ul class="mt-3 text-sm text-slate-200 space-y-2">
                 <li><span class="text-emerald-300 font-semibold">Delivered (100%)</span> — targets met as defined.</li>
                 <li><span class="text-orange-300 font-semibold">Mostly (80%)</span> — minor gaps, overall achieved.</li>
@@ -434,172 +396,70 @@
                 <li><span class="text-red-300 font-semibold">Not Delivered (0%)</span> — not achieved.</li>
               </ul>
               <p class="text-xs text-slate-300 mt-4">
-                Recommendation: define “Partial Achievement” thresholds per goal to ensure consistent evaluation.
+                Define “Partial Achievement” thresholds per goal for consistent evaluation.
               </p>
             </div>
           </div>
-
         </div>
 
-        <!-- TAB: Cascade Map -->
+        <!-- TAB: Cascade Map (dynamic; includes ID) -->
         <div id="content-cascade" class="hidden fade-in space-y-6">
           <div class="flex items-center justify-between gap-3">
             <div>
               <h3 class="text-lg font-bold">Cascade Map (Strategic Pillars → Role Deliverables)</h3>
-              <p class="text-sm text-slate-500">Expandable sections show deliverables and measurable indicators.</p>
+              <p class="text-sm text-slate-500">This view is generated from the worksheet goals.</p>
             </div>
             <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">
-              Executive alignment view
+              Auto-updates
             </span>
           </div>
 
-          <!-- Pillar: Global Onboarding -->
-          <details class="bg-white border border-slate-200 rounded-2xl p-6 card-hover transition-all" open>
-            <summary class="cursor-pointer list-none">
-              <div class="flex items-start justify-between gap-3">
-                <div class="flex items-start gap-3">
-                  <div class="bg-blue-100 text-blue-700 p-2 rounded-xl mt-0.5">
-                    <i data-lucide="globe" class="w-5 h-5"></i>
-                  </div>
-                  <div>
-                    <p class="text-xs font-bold text-slate-500 uppercase">Strategic Pillar</p>
-                    <h4 class="text-lg font-bold">Global Onboarding</h4>
-                    <p class="text-sm text-slate-500 mt-1">Framework → assets + LMS structure → pilot enablement</p>
-                  </div>
-                </div>
-
-                <div class="text-right">
-                  <p class="text-xs text-slate-500">Role allocation</p>
-                  <p class="text-2xl font-extrabold text-blue-700">30%</p>
-                </div>
-              </div>
-            </summary>
-
-            <div class="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                <p class="text-xs font-bold text-slate-500 uppercase">Role-owned outcomes</p>
-                <ul class="mt-2 text-sm text-slate-700 space-y-2">
-                  <li class="flex gap-2"><span class="text-blue-600 font-bold">•</span> Onboarding assets produced and SCORM-ready</li>
-                  <li class="flex gap-2"><span class="text-blue-600 font-bold">•</span> LMS structure deployed (paths/cohorts/rules)</li>
-                  <li class="flex gap-2"><span class="text-blue-600 font-bold">•</span> Pilot support (tracking + issue resolution)</li>
-                </ul>
-              </div>
-
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                <p class="text-xs font-bold text-slate-500 uppercase">Production workflow</p>
-                <div class="mt-2 text-sm text-slate-700 space-y-2">
-                  <div class="flex items-center gap-2">
-                    <i data-lucide="video" class="w-4 h-4 text-slate-500"></i>
-                    <span>Synthesia: scripts → videos</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <i data-lucide="layout-template" class="w-4 h-4 text-slate-500"></i>
-                    <span>Canva: visuals → job aids</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <i data-lucide="boxes" class="w-4 h-4 text-slate-500"></i>
-                    <span>Articulate: build → SCORM</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-slate-900 text-white rounded-xl p-4">
-                <p class="text-xs font-bold text-blue-200 uppercase">Proposed KPIs</p>
-                <ul class="mt-2 text-sm text-slate-200 space-y-2">
-                  <li><span class="text-orange-300 font-semibold">100%</span> delivery by pilot date</li>
-                  <li><span class="text-orange-300 font-semibold">100%</span> technical QA pass prior to release</li>
-                  <li><span class="text-orange-300 font-semibold">85–90%</span> pilot completion within agreed timeframe</li>
-                </ul>
-                <p class="mt-3 text-xs text-slate-300">
-                  Data: SABA completion reports + pilot cohort tracking.
-                </p>
-              </div>
-            </div>
-          </details>
-
-          <!-- Pillar: LMS Administration -->
-          <details class="bg-white border border-slate-200 rounded-2xl p-6 card-hover transition-all" open>
-            <summary class="cursor-pointer list-none">
-              <div class="flex items-start justify-between gap-3">
-                <div class="flex items-start gap-3">
-                  <div class="bg-orange-100 text-orange-700 p-2 rounded-xl mt-0.5">
-                    <i data-lucide="settings" class="w-5 h-5"></i>
-                  </div>
-                  <div>
-                    <p class="text-xs font-bold text-slate-500 uppercase">Strategic Pillar</p>
-                    <h4 class="text-lg font-bold">LMS Administration</h4>
-                    <p class="text-sm text-slate-500 mt-1">On-time learning operations and measurable execution</p>
-                  </div>
-                </div>
-
-                <div class="text-right">
-                  <p class="text-xs text-slate-500">Role allocation</p>
-                  <p class="text-2xl font-extrabold text-orange-700">60%</p>
-                </div>
-              </div>
-            </summary>
-
-            <div class="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                <p class="text-xs font-bold text-slate-500 uppercase">Role-owned outcomes</p>
-                <ul class="mt-2 text-sm text-slate-700 space-y-2">
-                  <li class="flex gap-2"><span class="text-orange-600 font-bold">•</span> Standardized intake through Jira</li>
-                  <li class="flex gap-2"><span class="text-orange-600 font-bold">•</span> SLA compliance and cycle time reporting</li>
-                  <li class="flex gap-2"><span class="text-orange-600 font-bold">•</span> Data integrity and accuracy controls</li>
-                </ul>
-              </div>
-
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                <p class="text-xs font-bold text-slate-500 uppercase">Operational scope</p>
-                <ul class="mt-2 text-sm text-slate-700 space-y-2">
-                  <li class="flex items-start gap-2"><i data-lucide="users" class="w-4 h-4 mt-0.5 text-slate-500"></i> Cohorts / groups / assignments</li>
-                  <li class="flex items-start gap-2"><i data-lucide="award" class="w-4 h-4 mt-0.5 text-slate-500"></i> Certificates, completion rules</li>
-                  <li class="flex items-start gap-2"><i data-lucide="file-bar-chart" class="w-4 h-4 mt-0.5 text-slate-500"></i> Reporting (compliance/activity)</li>
-                </ul>
-              </div>
-
-              <div class="bg-slate-900 text-white rounded-xl p-4">
-                <p class="text-xs font-bold text-orange-200 uppercase">Proposed KPIs</p>
-                <ul class="mt-2 text-sm text-slate-200 space-y-2">
-                  <li><span class="text-orange-300 font-semibold">90%</span> SLA compliance (by priority)</li>
-                  <li><span class="text-orange-300 font-semibold">≤ 1 business day</span> first response (90%+)</li>
-                  <li><span class="text-orange-300 font-semibold">≤ 3–5%</span> rework/error rate</li>
-                </ul>
-                <p class="mt-3 text-xs text-slate-300">
-                  Data: Jira metrics + SABA audit checks.
-                </p>
-              </div>
-            </div>
-          </details>
+          <div id="cascadeContainer" class="space-y-4"></div>
         </div>
 
-        <!-- TAB: KPIs -->
+        <!-- TAB: KPI Targets -->
         <div id="content-kpis" class="hidden fade-in space-y-6">
           <div class="flex items-center justify-between gap-3">
             <div>
-              <h3 class="text-lg font-bold">KPIs (Targets Leadership Can Measure)</h3>
-              <p class="text-sm text-slate-500">Designed to be controllable, measurable, and tied to Jira/SABA data.</p>
+              <h3 class="text-lg font-bold">KPI Targets</h3>
+              <p class="text-sm text-slate-500">Pulled from the “Measure/Outcome” section of each goal.</p>
             </div>
             <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">
-              Baseline in Q1 → improve by Q4
+              Auto-updates
             </span>
           </div>
 
-          <!-- (Your KPI cards remain unchanged — leaving as-is to keep your existing work intact.) -->
+          <div id="kpiTargetsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+
           <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5">
-            <p class="text-sm text-slate-700">
-              Tip: Your worksheet tab now becomes the “official” MBO format. This KPI tab supports it with visual summaries.
-            </p>
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h4 class="font-bold">Where measurement comes from</h4>
+                <p class="text-sm text-slate-600 mt-1">
+                  SLA/priority and response metrics are intended to be measured in Jira Service Management once implemented. :contentReference[oaicite:3]{index=3}
+                </p>
+              </div>
+              <button class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50"
+                onclick="openGlossary()">
+                <i data-lucide="info" class="w-4 h-4"></i> Glossary
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- TAB: Jira Readiness -->
         <div id="content-jira" class="hidden fade-in space-y-6">
-          <div>
-            <h3 class="text-lg font-bold">Jira Readiness (Service Catalog + Intake Standards)</h3>
-            <p class="text-sm text-slate-500">
-              The intake model is designed to prevent multiple tickets for a single program by using a unified “Complex Program Launch” request type.
-            </p>
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold">Jira Readiness (Service Catalog + Intake Standards)</h3>
+              <p class="text-sm text-slate-500">
+                Designed to avoid multiple tickets per program: one “Complex Program Launch” with conditional fields.
+              </p>
+            </div>
+            <button class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50"
+              onclick="openGlossary()">
+              <i data-lucide="book-open" class="w-4 h-4"></i> Terms / Glossary
+            </button>
           </div>
 
           <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
@@ -617,7 +477,7 @@
                     <th class="px-6 py-3 text-left">Request Type</th>
                     <th class="px-6 py-3 text-left">Scope</th>
                     <th class="px-6 py-3 text-left">Primary KPI</th>
-                    <th class="px-6 py-3 text-left">Proposed SLA</th>
+                    <th class="px-6 py-3 text-left">Proposed SLA <span class="text-slate-400">(click glossary)</span></th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -650,96 +510,34 @@
             </div>
           </div>
 
-          <p class="text-xs text-slate-500">
-            Optional enhancement: add formal SLA definitions and priority criteria if leadership wants stricter governance.
-          </p>
-        </div>
-
-        <!-- TAB: Roadmap -->
-        <div id="content-roadmap" class="hidden fade-in space-y-6">
-          <div>
-            <h3 class="text-lg font-bold">2026 Roadmap (Quarterly Milestones)</h3>
-            <p class="text-sm text-slate-500">Provides a structured review cadence for deliverables and KPI progression.</p>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <div class="bg-white border border-slate-200 rounded-2xl p-5">
-              <p class="text-xs font-bold text-slate-500 uppercase">Q1 — Foundation</p>
-              <h4 class="text-lg font-bold mt-1">Baseline + Standards</h4>
-              <ul class="mt-3 text-sm text-slate-700 space-y-2">
-                <li>• Jira catalog + intake standards</li>
-                <li>• Baseline ticket volume and cycle time</li>
-                <li>• QA checklist for SCORM + certificates</li>
-              </ul>
-            </div>
-            <div class="bg-white border border-slate-200 rounded-2xl p-5">
-              <p class="text-xs font-bold text-slate-500 uppercase">Q2 — Build</p>
-              <h4 class="text-lg font-bold mt-1">Onboarding Enablement</h4>
-              <ul class="mt-3 text-sm text-slate-700 space-y-2">
-                <li>• Produce onboarding assets</li>
-                <li>• Deploy onboarding paths/cohorts in SABA</li>
-                <li>• Initiate feedback measurement</li>
-              </ul>
-            </div>
-            <div class="bg-white border border-slate-200 rounded-2xl p-5">
-              <p class="text-xs font-bold text-slate-500 uppercase">Q3 — Execute</p>
-              <h4 class="text-lg font-bold mt-1">Pilot + Optimization</h4>
-              <ul class="mt-3 text-sm text-slate-700 space-y-2">
-                <li>• Pilot support and rapid issue resolution</li>
-                <li>• SLA compliance improvement</li>
-                <li>• Rework reduction and stabilization</li>
-              </ul>
-            </div>
-            <div class="bg-white border border-slate-200 rounded-2xl p-5">
-              <p class="text-xs font-bold text-slate-500 uppercase">Q4 — Scale</p>
-              <h4 class="text-lg font-bold mt-1">Repeatable Model</h4>
-              <ul class="mt-3 text-sm text-slate-700 space-y-2">
-                <li>• Scale onboarding model to additional audiences</li>
-                <li>• Sustain ≥ 90% SLA performance</li>
-                <li>• Close loop: metrics → improvements</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB: Alignment Items -->
-        <div id="content-questions" class="hidden fade-in space-y-6">
-          <div>
-            <h3 class="text-lg font-bold">Alignment Items to Confirm</h3>
-            <p class="text-sm text-slate-500">Used to finalize scope, governance, and KPI definitions.</p>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div class="bg-white border border-slate-200 rounded-2xl p-6">
-              <h4 class="font-bold flex items-center gap-2">
-                <i data-lucide="target" class="w-5 h-5 text-orange-600"></i> KPI Definitions &amp; Review Cadence
-              </h4>
-              <ul class="mt-3 text-sm text-slate-700 space-y-2">
-                <li>• KPI priority: SLA %, cycle time, QA pass, NPS/CSAT</li>
-                <li>• Confirmation that work is measured through Jira intake</li>
-                <li>• Monthly vs quarterly KPI review cadence</li>
-              </ul>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-2xl p-6">
-              <h4 class="font-bold flex items-center gap-2">
-                <i data-lucide="layers" class="w-5 h-5 text-orange-600"></i> Scope &amp; Dependencies
-              </h4>
-              <ul class="mt-3 text-sm text-slate-700 space-y-2">
-                <li>• Confirm role split: LMS Ops + onboarding enablement; STAR support-focused</li>
-                <li>• SME approval expectations (turnaround time and escalation path)</li>
-                <li>• IT boundaries for non-LMS access issues</li>
-              </ul>
-            </div>
-          </div>
-
           <div class="bg-slate-900 text-white rounded-2xl p-6">
-            <h4 class="font-bold">Summary</h4>
+            <h4 class="font-bold">Measurement intent</h4>
             <p class="text-sm text-slate-300 mt-2">
-              This operating model establishes measurable execution (Jira + SABA), defines role-owned scope,
-              and aligns deliverables and KPIs to 2026 strategic pillars. It is intended to support consistent performance evaluation.
+              Priorities help agents understand the relative importance and urgency of work and drive expected actions/timeframes. :contentReference[oaicite:4]{index=4}
             </p>
           </div>
+        </div>
+
+        <!-- TAB: Roadmap (editable) -->
+        <div id="content-roadmap" class="hidden fade-in space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-bold">Roadmap (Editable)</h3>
+              <p class="text-sm text-slate-500">This roadmap is editable and saved per profile.</p>
+            </div>
+          </div>
+          <div id="roadmapContainer" class="grid grid-cols-1 lg:grid-cols-4 gap-4"></div>
+        </div>
+
+        <!-- TAB: Alignment Items (editable) -->
+        <div id="content-questions" class="hidden fade-in space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-bold">Alignment Items (Editable)</h3>
+              <p class="text-sm text-slate-500">Add items as you refine objectives in 1:1 reviews.</p>
+            </div>
+          </div>
+          <div id="alignmentItemsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
         </div>
 
       </div>
@@ -747,12 +545,59 @@
 
   </main>
 
-  <script>
-    // ----------------------------
-    // Init icons
-    // ----------------------------
-    lucide.createIcons();
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 hidden items-center justify-center z-[100]">
+    <div class="absolute inset-0 modal-backdrop" onclick="closeModal()"></div>
+    <div class="relative bg-white w-[95%] max-w-3xl rounded-2xl border border-slate-200 shadow-xl">
+      <div class="flex items-start justify-between gap-3 px-6 py-4 border-b border-slate-200">
+        <div class="min-w-0">
+          <h3 id="modalTitle" class="text-lg font-bold text-slate-900 truncate">Details</h3>
+          <p id="modalSubtitle" class="text-sm text-slate-500 mt-1">—</p>
+        </div>
+        <button class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50" onclick="closeModal()" aria-label="Close">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="modalBody" class="px-6 py-5 space-y-4"></div>
+      <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
+        <div class="text-xs text-slate-500">
+          Tip: Export JSON/CSV to store outside browser storage. :contentReference[oaicite:5]{index=5}
+        </div>
+        <button class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800"
+          onclick="closeModal()">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <!-- Guided Tour -->
+  <div id="tour" class="fixed inset-0 hidden z-[110]">
+    <div class="absolute inset-0 modal-backdrop"></div>
+    <div class="relative max-w-2xl mx-auto mt-24 bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <div class="text-xs font-bold text-slate-500 uppercase">Guided Review</div>
+          <div id="tourTitle" class="text-lg font-bold">Step</div>
+        </div>
+        <button class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50" onclick="endTour()">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="px-6 py-5">
+        <p id="tourText" class="text-sm text-slate-700 leading-relaxed"></p>
+      </div>
+      <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-between">
+        <button class="px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50"
+          onclick="prevTour()">Back</button>
+        <div class="text-xs text-slate-500" id="tourProgress">—</div>
+        <button class="px-3 py-2 rounded-lg bg-orange-600 text-white text-sm font-semibold hover:bg-orange-700"
+          onclick="nextTour()">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
     // ----------------------------
     // Tabs
     // ----------------------------
@@ -778,154 +623,230 @@
     }
 
     // ----------------------------
-    // Worksheet state + persistence
+    // Modal
     // ----------------------------
-    const STORAGE_KEY = "hd_mbo_worksheet_v1";
-
-    const defaultState = {
-      emp: {
-        name: "Jorge A. Gonzalez",
-        title: "LMS & Instructional Design Specialist",
-        id: "",
-        manager: "Kimberly Guzmán",
-        division: "Talent Management / L&D",
-        country: "Mexico",
-        year: "2026",
-        deadline: "Wednesday, Feb 25, 2026"
-      },
-      goals: [
-        {
-          num: 1,
-          title: "LMS Operational Excellence",
-          weight: 55,
-          action:
-`Ensure reliable, accurate, and timely execution of LMS operations through standardized intake, SLA-based execution, and data integrity controls.`,
-          measure:
-`KPIs:
-• SLA Compliance ≥ 90% by Q4 (post Jira go-live)
-• First response ≤ 1 business day (≥90% of requests)
-• Error/Rework rate ≤ 3–5% (reopened / correction requests)
-• Cycle time improvement 20–30% from Q1 baseline
-Data Sources: Jira metrics + SABA audit checks`,
-          timing:
-`Q1: Baseline + request intake standards
-Q2–Q4: Optimization + SLA performance improvement`,
-          partial:
-`Mostly Delivered: SLA 80–89% and error rate ≤ 8%
-Partially Delivered: SLA 60–79% or recurring rework
-Not Delivered: SLA < 60% and/or high operational errors`,
-          quarters: {
-            Q1: { status: "On Track", comments: "" },
-            Q2: { status: "On Track", comments: "" },
-            Q3: { status: "On Track", comments: "" },
-            Q4: { status: "On Track", comments: "" }
-          },
-          fullYear: { achievement: "Delivered (100%)", comments: "" }
-        },
-        {
-          num: 2,
-          title: "Global Onboarding Enablement (LMS + Digital Assets)",
-          weight: 30,
-          action:
-`Support the development, deployment, and pilot execution of Global Onboarding through digital asset production and LMS configuration.`,
-          measure:
-`KPIs:
-• On-time delivery of onboarding assets by agreed milestones
-• 100% QA pass rate prior to release (tracking + navigation + completion)
-• Pilot completion rate ≥ 85–90% within agreed timeframe
-• Time-to-enroll new hires < 48 hours (once standardized)
-Data Sources: SABA reports + pilot cohort tracking + intake timestamps`,
-          timing:
-`Q1–Q2: Build assets + LMS structure
-Q3: Pilot execution support
-Q4: Iterate/optimize based on feedback`,
-          partial:
-`Mostly Delivered: Pilot launched with minor QA/engagement gaps
-Partially Delivered: Pilot delayed or completion below target
-Not Delivered: Pilot not executed or major defects post-launch`,
-          quarters: {
-            Q1: { status: "On Track", comments: "" },
-            Q2: { status: "On Track", comments: "" },
-            Q3: { status: "On Track", comments: "" },
-            Q4: { status: "On Track", comments: "" }
-          },
-          fullYear: { achievement: "Delivered (100%)", comments: "" }
-        },
-        {
-          num: 3,
-          title: "Instructional Design & Content Quality",
-          weight: 15,
-          action:
-`Develop and refine digital learning assets to meet quality, clarity, and brand standards, ensuring readiness for localization and deployment.`,
-          measure:
-`KPIs:
-• 100% of assigned modules delivered by milestone dates (as agreed)
-• Quality checklist compliance (format, accessibility basics, navigation)
-• Stakeholder approvals with minimal rework cycles
-• Localization readiness (Spanish translation-friendly formatting)
-Data Sources: Project milestones + QA checklist + review logs`,
-          timing:
-`Q1–Q4: Ongoing production aligned to program priorities`,
-          partial:
-`Mostly Delivered: Minor rework needed; deadlines met
-Partially Delivered: Multiple rework loops or missed milestone dates
-Not Delivered: Deliverables not produced or not approved`,
-          quarters: {
-            Q1: { status: "On Track", comments: "" },
-            Q2: { status: "On Track", comments: "" },
-            Q3: { status: "On Track", comments: "" },
-            Q4: { status: "On Track", comments: "" }
-          },
-          fullYear: { achievement: "Delivered (100%)", comments: "" }
-        },
-        {
-          num: 4,
-          title: "Governance & Measurement (Optional)",
-          weight: 0,
-          action:
-`Establish scalable governance for LMS operations through service catalog definition, SLA tiers, and performance reporting cadence.`,
-          measure:
-`KPIs:
-• Jira service catalog defined and approved (request types + required fields)
-• SLA definitions documented (P1/P2/P3) and adopted
-• Monthly performance dashboard delivered (volume, SLA%, cycle time, backlog)
-Data Sources: Jira + monthly reporting artifacts`,
-          timing:
-`Q1–Q2: Build governance foundation
-Q3–Q4: Operationalize and mature reporting`,
-          partial:
-`Mostly Delivered: Governance implemented with minor adoption gaps
-Partially Delivered: Documentation exists but adoption inconsistent
-Not Delivered: No defined governance or reporting cadence`,
-          quarters: {
-            Q1: { status: "On Track", comments: "" },
-            Q2: { status: "On Track", comments: "" },
-            Q3: { status: "On Track", comments: "" },
-            Q4: { status: "On Track", comments: "" }
-          },
-          fullYear: { achievement: "Delivered (100%)", comments: "" }
-        }
-      ]
-    };
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(defaultState);
-        const parsed = JSON.parse(raw);
-        return parsed;
-      } catch (e) {
-        console.warn("Failed to load state:", e);
-        return structuredClone(defaultState);
-      }
+    function openModal({title, subtitle, bodyHtml}) {
+      document.getElementById("modalTitle").textContent = title || "Details";
+      document.getElementById("modalSubtitle").textContent = subtitle || "";
+      document.getElementById("modalBody").innerHTML = bodyHtml || "";
+      document.getElementById("modal").classList.remove("hidden");
+      document.getElementById("modal").classList.add("flex");
+      lucide.createIcons();
+    }
+    function closeModal() {
+      const m = document.getElementById("modal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
     }
 
-    let state = loadState();
+    // ----------------------------
+    // Glossary
+    // ----------------------------
+    function openGlossary() {
+      openModal({
+        title: "Glossary (Jira / KPI Terms)",
+        subtitle: "Definitions used in this operating model",
+        bodyHtml: `
+          <div class="space-y-3 text-sm text-slate-700">
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <div class="font-bold">Priority (P1 / P2 / P3)</div>
+              <p class="mt-1">
+                Priority indicates relative importance so teams can react accordingly; commonly defined using impact and urgency.
+                Once defined, priority can drive expected response/resolution timeframes. 
+              </p>
+              <div class="text-xs text-slate-500 mt-2">Source: Atlassian Jira Service Management docs.</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <div class="font-bold">SLA</div>
+              <p class="mt-1">
+                A measurable time commitment for actions (like first response or resolution) tied to work type/priority.
+                In Jira Service Management, SLAs can be tracked against issues and reported.
+              </p>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <div class="font-bold">Cycle Time</div>
+              <p class="mt-1">Time from “request received” (ticket created) to “done” (ticket resolved).</p>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <div class="font-bold">First Response Time</div>
+              <p class="mt-1">Time from ticket created to first agent acknowledgement/comment.</p>
+            </div>
+            <div class="text-xs text-slate-500">
+              Note: Priority definitions and SLAs should be confirmed and approved in the final MBO version.
+            </div>
+          </div>
+        `
+      });
+    }
 
-    function saveState(showToast = true) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      if (showToast) flashAutosave("Saved");
-      updateTotalsAndHero();
+    // ----------------------------
+    // Storage: Profiles + State
+    // ----------------------------
+    const PROFILES_KEY = "hd_mbo_profiles_v1";
+    const ACTIVE_PROFILE_KEY = "hd_mbo_active_profile_v1";
+
+    const quarterStatusOptions = ["On Track", "At Risk", "Off Track"];
+    const achievementOptions = [
+      "Delivered (100%)",
+      "Mostly Delivered (80%)",
+      "Partially Delivered (40%)",
+      "Did Not Deliver (0%)"
+    ];
+
+    function achievementToPct(label) {
+      if ((label||"").startsWith("Delivered")) return 100;
+      if ((label||"").startsWith("Mostly")) return 80;
+      if ((label||"").startsWith("Partially")) return 40;
+      return 0;
+    }
+
+    // Category mapping for colors + icons
+    const CATEGORY = {
+      OPS: { label: "LMS Ops", color: "orange", icon: "settings" },
+      ONB: { label: "Onboarding", color: "blue", icon: "globe" },
+      ID:  { label: "Instructional Design", color: "emerald", icon: "pen-tool" },
+      GOV: { label: "Governance", color: "slate", icon: "shield" },
+    };
+
+    function catBadge(cat) {
+      const c = CATEGORY[cat] || CATEGORY.GOV;
+      const map = {
+        orange: "bg-orange-50 text-orange-700 border-orange-200",
+        blue: "bg-blue-50 text-blue-700 border-blue-200",
+        emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",
+        slate: "bg-slate-100 text-slate-700 border-slate-200",
+      };
+      return map[c.color] || map.slate;
+    }
+
+    function catHeaderClass(cat) {
+      const c = CATEGORY[cat] || CATEGORY.GOV;
+      const map = {
+        orange: "bg-orange-50 border-orange-200",
+        blue: "bg-blue-50 border-blue-200",
+        emerald: "bg-emerald-50 border-emerald-200",
+        slate: "bg-slate-50 border-slate-200",
+      };
+      return map[c.color] || map.slate;
+    }
+
+    function defaultState() {
+      return {
+        emp: {
+          name: "Jorge A. Gonzalez",
+          title: "LMS & Instructional Design Specialist",
+          id: "",
+          manager: "Kimberly Guzmán",
+          division: "Talent Management / L&D",
+          country: "Mexico",
+          year: "2026",
+          deadline: "Wednesday, Feb 25, 2026"
+        },
+        // Editable Roadmap + Alignment Items
+        roadmap: [
+          { q: "Q1", title: "Baseline + Standards", bullets: "Jira catalog + intake standards\nBaseline ticket volume and cycle time\nQA checklist for SCORM + certificates" },
+          { q: "Q2", title: "Onboarding Enablement", bullets: "Produce onboarding assets\nDeploy onboarding paths/cohorts in SABA\nInitiate feedback measurement" },
+          { q: "Q3", title: "Pilot + Optimization", bullets: "Pilot support and rapid issue resolution\nSLA compliance improvement\nRework reduction and stabilization" },
+          { q: "Q4", title: "Scale", bullets: "Scale onboarding model to additional audiences\nSustain ≥ 90% SLA performance\nClose loop: metrics → improvements" },
+        ],
+        alignmentItems: [
+          { title: "KPI Definitions & Review Cadence", items: "Confirm KPI priority (SLA%, cycle time, QA pass, NPS/CSAT)\nConfirm review cadence (monthly vs quarterly)\nConfirm system-of-record rule (Jira)" },
+          { title: "Scope & Dependencies", items: "Confirm role split and ownership boundaries\nDefine SME approval expectations\nConfirm IT boundary for non-LMS access issues" },
+        ],
+        goals: [
+          {
+            num: 1,
+            category: "OPS",
+            title: "LMS Operational Excellence",
+            outcome: "Predictable, measurable LMS operations via standardized intake, SLA execution, and data integrity controls.",
+            weight: 55,
+            action: "Ensure reliable, accurate, and timely execution of LMS operations through standardized intake, SLA-based execution, and data integrity controls.",
+            measure: "KPIs:\n• SLA Compliance ≥ 90% by Q4 (post Jira go-live)\n• First response ≤ 1 business day (≥90% of requests)\n• Error/Rework rate ≤ 3–5% (reopened / correction requests)\n• Cycle time improvement 20–30% from Q1 baseline\nData Sources: Jira metrics + SABA audit checks",
+            timing: "Q1: Baseline + request intake standards\nQ2–Q4: Optimization + SLA performance improvement",
+            partial: "Mostly Delivered: SLA 80–89% and error rate ≤ 8%\nPartially Delivered: SLA 60–79% or recurring rework\nNot Delivered: SLA < 60% and/or high operational errors",
+            quarters: { Q1:{status:"On Track",comments:""},Q2:{status:"On Track",comments:""},Q3:{status:"On Track",comments:""},Q4:{status:"On Track",comments:""} },
+            fullYear: { achievement: "Delivered (100%)", comments: "" }
+          },
+          {
+            num: 2,
+            category: "ONB",
+            title: "Global Onboarding Enablement (LMS + Digital Assets)",
+            outcome: "Onboarding assets + LMS structure delivered on-time, QA-validated, and pilot-ready for scale.",
+            weight: 30,
+            action: "Support the development, deployment, and pilot execution of Global Onboarding through digital asset production and LMS configuration.",
+            measure: "KPIs:\n• On-time delivery of onboarding assets by agreed milestones\n• 100% QA pass rate prior to release (tracking + navigation + completion)\n• Pilot completion rate ≥ 85–90% within agreed timeframe\n• Time-to-enroll new hires < 48 hours (once standardized)\nData Sources: SABA reports + pilot cohort tracking + intake timestamps",
+            timing: "Q1–Q2: Build assets + LMS structure\nQ3: Pilot execution support\nQ4: Iterate/optimize based on feedback",
+            partial: "Mostly Delivered: Pilot launched with minor QA/engagement gaps\nPartially Delivered: Pilot delayed or completion below target\nNot Delivered: Pilot not executed or major defects post-launch",
+            quarters: { Q1:{status:"On Track",comments:""},Q2:{status:"On Track",comments:""},Q3:{status:"On Track",comments:""},Q4:{status:"On Track",comments:""} },
+            fullYear: { achievement: "Delivered (100%)", comments: "" }
+          },
+          {
+            num: 3,
+            category: "ID",
+            title: "Instructional Design & Content Quality",
+            outcome: "High-quality, localization-ready digital learning assets delivered with minimal rework and consistent standards.",
+            weight: 15,
+            action: "Develop and refine digital learning assets to meet quality, clarity, and brand standards, ensuring readiness for localization and deployment.",
+            measure: "KPIs:\n• 100% of assigned modules delivered by milestone dates (as agreed)\n• Quality checklist compliance (format, accessibility basics, navigation)\n• Stakeholder approvals with minimal rework cycles\n• Localization readiness (Spanish translation-friendly formatting)\nData Sources: Project milestones + QA checklist + review logs",
+            timing: "Q1–Q4: Ongoing production aligned to program priorities",
+            partial: "Mostly Delivered: Minor rework needed; deadlines met\nPartially Delivered: Multiple rework loops or missed milestone dates\nNot Delivered: Deliverables not produced or not approved",
+            quarters: { Q1:{status:"On Track",comments:""},Q2:{status:"On Track",comments:""},Q3:{status:"On Track",comments:""},Q4:{status:"On Track",comments:""} },
+            fullYear: { achievement: "Delivered (100%)", comments: "" }
+          },
+          {
+            num: 4,
+            category: "GOV",
+            title: "Governance & Measurement (Optional)",
+            outcome: "Standardized request taxonomy + reporting cadence to improve visibility, prioritization, and performance measurement.",
+            weight: 0,
+            action: "Establish scalable governance for LMS operations through service catalog definition, SLA tiers, and performance reporting cadence.",
+            measure: "KPIs:\n• Jira service catalog defined and approved (request types + required fields)\n• SLA definitions documented (P1/P2/P3) and adopted\n• Monthly performance dashboard delivered (volume, SLA%, cycle time, backlog)\nData Sources: Jira + monthly reporting artifacts",
+            timing: "Q1–Q2: Build governance foundation\nQ3–Q4: Operationalize and mature reporting",
+            partial: "Mostly Delivered: Governance implemented with minor adoption gaps\nPartially Delivered: Documentation exists but adoption inconsistent\nNot Delivered: No defined governance or reporting cadence",
+            quarters: { Q1:{status:"On Track",comments:""},Q2:{status:"On Track",comments:""},Q3:{status:"On Track",comments:""},Q4:{status:"On Track",comments:""} },
+            fullYear: { achievement: "Delivered (100%)", comments: "" }
+          }
+        ]
+      };
+    }
+
+    function loadProfiles() {
+      try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || "{}"); }
+      catch { return {}; }
+    }
+    function saveProfiles(profiles) {
+      localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+    }
+    function getActiveProfileId() {
+      return localStorage.getItem(ACTIVE_PROFILE_KEY) || "profile-1";
+    }
+    function setActiveProfileId(id) {
+      localStorage.setItem(ACTIVE_PROFILE_KEY, id);
+    }
+
+    // Ensure at least 1 profile exists
+    function ensureProfiles() {
+      const profiles = loadProfiles();
+      const active = getActiveProfileId();
+      if (!profiles[active]) {
+        profiles[active] = { label: "Employee 1", state: defaultState() };
+        saveProfiles(profiles);
+      }
+      return profiles;
+    }
+
+    let profiles = ensureProfiles();
+    let activeProfileId = getActiveProfileId();
+    let state = structuredClone(profiles[activeProfileId].state);
+
+    // ----------------------------
+    // Persistence helpers
+    // ----------------------------
+    function persistCurrentProfile(showFlash=true) {
+      profiles[activeProfileId].state = state;
+      saveProfiles(profiles);
+      if (showFlash) flashAutosave("Saved");
+      renderAll();
     }
 
     function flashAutosave(text) {
@@ -940,65 +861,136 @@ Not Delivered: No defined governance or reporting cadence`,
     }
 
     // ----------------------------
-    // Utility
+    // Render: Profiles UI
     // ----------------------------
-    function achievementToPct(label) {
-      if (label.startsWith("Delivered")) return 100;
-      if (label.startsWith("Mostly")) return 80;
-      if (label.startsWith("Partially")) return 40;
-      return 0;
+    function renderProfileSelect() {
+      const sel = document.getElementById("profileSelect");
+      sel.innerHTML = "";
+      Object.entries(profiles).forEach(([id, p]) => {
+        const opt = document.createElement("option");
+        opt.value = id;
+        opt.textContent = p.label;
+        if (id === activeProfileId) opt.selected = true;
+        sel.appendChild(opt);
+      });
+
+      sel.onchange = () => {
+        // save current first
+        persistCurrentProfile(false);
+        activeProfileId = sel.value;
+        setActiveProfileId(activeProfileId);
+        state = structuredClone(profiles[activeProfileId].state);
+        bindEmployeeInputs();
+        renderGoals();
+        renderAll();
+        lucide.createIcons();
+      };
     }
 
-    const quarterStatusOptions = ["On Track", "At Risk", "Off Track"];
-    const achievementOptions = [
-      "Delivered (100%)",
-      "Mostly Delivered (80%)",
-      "Partially Delivered (40%)",
-      "Did Not Deliver (0%)"
-    ];
+    function newProfile() {
+      const label = prompt("New profile name (e.g., Employee 2):", "Employee 2");
+      if (!label) return;
+      const id = "profile-" + Math.random().toString(16).slice(2);
+      profiles[id] = { label, state: defaultState() };
+      saveProfiles(profiles);
+      activeProfileId = id;
+      setActiveProfileId(id);
+      state = structuredClone(profiles[id].state);
+      renderProfileSelect();
+      bindEmployeeInputs();
+      renderGoals();
+      renderAll();
+      lucide.createIcons();
+    }
 
+    function duplicateProfile() {
+      const label = prompt("Duplicate profile name:", (profiles[activeProfileId]?.label || "Employee") + " (Copy)");
+      if (!label) return;
+      const id = "profile-" + Math.random().toString(16).slice(2);
+      profiles[id] = { label, state: structuredClone(state) };
+      saveProfiles(profiles);
+      renderProfileSelect();
+      flashAutosave("Duplicated");
+    }
+
+    function deleteProfile() {
+      if (Object.keys(profiles).length <= 1) {
+        alert("You must keep at least one profile.");
+        return;
+      }
+      if (!confirm("Delete this profile?")) return;
+      delete profiles[activeProfileId];
+      saveProfiles(profiles);
+      activeProfileId = Object.keys(profiles)[0];
+      setActiveProfileId(activeProfileId);
+      state = structuredClone(profiles[activeProfileId].state);
+      renderProfileSelect();
+      bindEmployeeInputs();
+      renderGoals();
+      renderAll();
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // Employee bindings
+    // ----------------------------
+    function bindEmployeeInputs() {
+      document.querySelectorAll("[data-bind]").forEach(input => {
+        const path = input.getAttribute("data-bind");
+        const [root, key] = path.split(".");
+        if (!state[root]) state[root] = {};
+        input.value = state[root][key] ?? "";
+
+        input.oninput = () => {
+          state[root][key] = input.value;
+          // keep header in sync
+          document.getElementById("hdrPreparedBy").textContent = state.emp.name || "—";
+          persistCurrentProfile(false);
+        };
+      });
+
+      // sync header fields
+      document.getElementById("hdrPreparedBy").textContent = state.emp.name || "—";
+      document.getElementById("hdrDate").textContent = "Updated: " + new Date().toLocaleDateString();
+    }
+
+    // ----------------------------
+    // Worksheet: Goals rendering
+    // ----------------------------
     function statusBadgeClass(status) {
       if (status === "On Track") return "bg-emerald-50 text-emerald-700 border-emerald-200";
       if (status === "At Risk") return "bg-yellow-50 text-yellow-700 border-yellow-200";
       return "bg-red-50 text-red-700 border-red-200";
     }
 
-    // ----------------------------
-    // Bind employee info inputs
-    // ----------------------------
-    function bindEmployeeInputs() {
-      document.querySelectorAll("[data-bind]").forEach(input => {
-        const path = input.getAttribute("data-bind"); // e.g., emp.name
-        const [root, key] = path.split(".");
-        if (!state[root]) state[root] = {};
-        input.value = state[root][key] ?? "";
-
-        input.addEventListener("input", () => {
-          state[root][key] = input.value;
-          saveState(false);
-        });
-      });
+    function escapeHtml(str) {
+      return (str ?? "").toString()
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+    }
+    function escapeAttr(str) {
+      return (str ?? "").toString()
+        .replaceAll("&","&amp;").replaceAll("\"","&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;");
     }
 
-    // ----------------------------
-    // Render goals
-    // ----------------------------
     function renderGoals() {
       const container = document.getElementById("goalsContainer");
       container.innerHTML = "";
 
-      state.goals.forEach((g, idx) => {
-        const goalId = `goal-${g.num}`;
+      state.goals.forEach(g => {
+        const cat = CATEGORY[g.category] || CATEGORY.GOV;
 
         const card = document.createElement("div");
         card.className = "bg-white border border-slate-200 rounded-2xl overflow-hidden";
 
         card.innerHTML = `
-          <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-start justify-between gap-4">
+          <div class="px-6 py-4 border-b border-slate-200 ${catHeaderClass(g.category)} flex items-start justify-between gap-4">
             <div class="min-w-0">
-              <div class="text-xs font-bold text-slate-500 uppercase">Goal ${g.num}</div>
-              <div class="text-lg font-extrabold text-slate-900 truncate">${escapeHtml(g.title || `Goal ${g.num}`)}</div>
-              <div class="text-xs text-slate-500 mt-1">Use this as the objective title in the template.</div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-500 uppercase">Goal ${g.num}</span>
+                <span class="text-xs font-semibold px-2 py-1 rounded-full border ${catBadge(g.category)}">${cat.label}</span>
+              </div>
+              <div class="text-lg font-extrabold text-slate-900 truncate mt-1">${escapeHtml(g.title || `Goal ${g.num}`)}</div>
+              <div class="text-xs text-slate-500 mt-1">This title is what you paste into the official template.</div>
             </div>
 
             <div class="flex items-center gap-3">
@@ -1030,30 +1022,37 @@ Not Delivered: No defined governance or reporting cadence`,
                   data-goal-title="${g.num}" />
               </div>
               <div>
-                <label class="text-xs font-bold text-slate-500 uppercase">Timing / Due Dates (editable)</label>
-                <textarea rows="3" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                  data-goal-timing="${g.num}">${escapeHtml(g.timing)}</textarea>
+                <label class="text-xs font-bold text-slate-500 uppercase">Business Outcome (High-level)</label>
+                <input class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                  value="${escapeAttr(g.outcome || "")}"
+                  data-goal-outcome="${g.num}" />
+                <p class="text-xs text-slate-500 mt-2">This populates the Executive Summary card automatically.</p>
               </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
-                <label class="text-xs font-bold text-slate-500 uppercase">Action (KPI Definition / Explanation)</label>
-                <textarea rows="4" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                  data-goal-action="${g.num}">${escapeHtml(g.action)}</textarea>
+                <label class="text-xs font-bold text-slate-500 uppercase">Timing / Due Dates</label>
+                <textarea rows="3" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                  data-goal-timing="${g.num}">${escapeHtml(g.timing)}</textarea>
               </div>
               <div>
-                <label class="text-xs font-bold text-slate-500 uppercase">Measure / Outcome (Metrics / Milestones)</label>
-                <textarea rows="4" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                  data-goal-measure="${g.num}">${escapeHtml(g.measure)}</textarea>
+                <label class="text-xs font-bold text-slate-500 uppercase">Action (KPI Definition / Explanation)</label>
+                <textarea rows="3" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                  data-goal-action="${g.num}">${escapeHtml(g.action)}</textarea>
               </div>
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-slate-500 uppercase">Measure / Outcome (Metrics / Milestones)</label>
+              <textarea rows="4" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                data-goal-measure="${g.num}">${escapeHtml(g.measure)}</textarea>
             </div>
 
             <div>
               <label class="text-xs font-bold text-slate-500 uppercase">Partial Achievement Defined</label>
               <textarea rows="3" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
                 data-goal-partial="${g.num}">${escapeHtml(g.partial)}</textarea>
-              <p class="text-xs text-slate-500 mt-2">Define thresholds to ensure consistent scoring (80% vs 40% vs 0%).</p>
             </div>
 
             <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
@@ -1069,7 +1068,7 @@ Not Delivered: No defined governance or reporting cadence`,
                       <div class="font-bold">${q}</div>
                       <div class="flex items-center gap-2">
                         <span class="text-xs font-semibold px-2 py-1 rounded-full border ${statusBadgeClass(g.quarters[q].status)}"
-                          id="${goalId}-${q}-badge">${g.quarters[q].status}</span>
+                          id="goal-${g.num}-${q}-badge">${g.quarters[q].status}</span>
                         <select class="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold"
                           data-goal-q-status="${g.num}" data-q="${q}">
                           ${quarterStatusOptions.map(opt => `
@@ -1090,11 +1089,11 @@ Not Delivered: No defined governance or reporting cadence`,
               <div class="flex items-start justify-between gap-3">
                 <div>
                   <div class="text-xs text-slate-300 uppercase font-bold">Full Year Summary</div>
-                  <div class="text-sm text-slate-200 mt-1">Use this section to capture year-end results and context for scoring.</div>
+                  <div class="text-sm text-slate-200 mt-1">Capture results/context for scoring.</div>
                 </div>
                 <div class="text-right">
                   <div class="text-xs text-slate-300 uppercase font-bold">Weighted Score</div>
-                  <div class="text-2xl font-extrabold text-white" id="${goalId}-score">—</div>
+                  <div class="text-2xl font-extrabold text-white" id="goal-${g.num}-score">—</div>
                   <div class="text-xs text-slate-300">Weight × Achievement</div>
                 </div>
               </div>
@@ -1105,63 +1104,54 @@ Not Delivered: No defined governance or reporting cadence`,
             </div>
           </div>
         `;
-
         container.appendChild(card);
       });
 
       bindGoalInputs();
-      updateTotalsAndHero();
+      updateTotalsAndScoring();
       lucide.createIcons();
     }
 
-    // escape helpers for safe rendering
-    function escapeHtml(str) {
-      return (str ?? "").toString()
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;");
-    }
-    function escapeAttr(str) {
-      return (str ?? "").toString()
-        .replaceAll("&","&amp;")
-        .replaceAll("\"","&quot;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;");
-    }
-
     function bindGoalInputs() {
-      // Title
+      // title
       document.querySelectorAll("[data-goal-title]").forEach(el => {
         const num = Number(el.getAttribute("data-goal-title"));
-        el.addEventListener("input", () => {
-          const g = state.goals.find(x => x.num === num);
-          g.title = el.value;
-          saveState(false);
-        });
+        el.oninput = () => {
+          state.goals.find(x => x.num === num).title = el.value;
+          persistCurrentProfile(false);
+        };
       });
 
-      // Weight
+      // outcome
+      document.querySelectorAll("[data-goal-outcome]").forEach(el => {
+        const num = Number(el.getAttribute("data-goal-outcome"));
+        el.oninput = () => {
+          state.goals.find(x => x.num === num).outcome = el.value;
+          persistCurrentProfile(false);
+        };
+      });
+
+      // weight
       document.querySelectorAll("[data-goal-weight]").forEach(el => {
         const num = Number(el.getAttribute("data-goal-weight"));
-        el.addEventListener("input", () => {
+        el.oninput = () => {
           const g = state.goals.find(x => x.num === num);
           g.weight = clampInt(el.value, 0, 100);
           el.value = g.weight;
-          saveState(false);
-        });
+          persistCurrentProfile(false);
+        };
       });
 
-      // Achievement
+      // achievement
       document.querySelectorAll("[data-goal-achievement]").forEach(el => {
         const num = Number(el.getAttribute("data-goal-achievement"));
-        el.addEventListener("change", () => {
-          const g = state.goals.find(x => x.num === num);
-          g.fullYear.achievement = el.value;
-          saveState(false);
-        });
+        el.onchange = () => {
+          state.goals.find(x => x.num === num).fullYear.achievement = el.value;
+          persistCurrentProfile(false);
+        };
       });
 
-      // Textareas: action/measure/timing/partial
+      // textareas
       [
         ["data-goal-action","action"],
         ["data-goal-measure","measure"],
@@ -1170,49 +1160,44 @@ Not Delivered: No defined governance or reporting cadence`,
       ].forEach(([attr, key]) => {
         document.querySelectorAll(`[${attr}]`).forEach(el => {
           const num = Number(el.getAttribute(attr));
-          el.addEventListener("input", () => {
-            const g = state.goals.find(x => x.num === num);
-            g[key] = el.value;
-            saveState(false);
-          });
+          el.oninput = () => {
+            state.goals.find(x => x.num === num)[key] = el.value;
+            persistCurrentProfile(false);
+          };
         });
       });
 
-      // Quarterly status + comments
+      // quarterly status/comments
       document.querySelectorAll("[data-goal-q-status]").forEach(el => {
         const num = Number(el.getAttribute("data-goal-q-status"));
         const q = el.getAttribute("data-q");
-        el.addEventListener("change", () => {
+        el.onchange = () => {
           const g = state.goals.find(x => x.num === num);
           g.quarters[q].status = el.value;
-          // update badge
           const badge = document.getElementById(`goal-${num}-${q}-badge`);
           if (badge) {
             badge.textContent = el.value;
             badge.className = `text-xs font-semibold px-2 py-1 rounded-full border ${statusBadgeClass(el.value)}`;
           }
-          saveState(false);
-        });
+          persistCurrentProfile(false);
+        };
       });
 
       document.querySelectorAll("[data-goal-q-comments]").forEach(el => {
         const num = Number(el.getAttribute("data-goal-q-comments"));
         const q = el.getAttribute("data-q");
-        el.addEventListener("input", () => {
-          const g = state.goals.find(x => x.num === num);
-          g.quarters[q].comments = el.value;
-          saveState(false);
-        });
+        el.oninput = () => {
+          state.goals.find(x => x.num === num).quarters[q].comments = el.value;
+          persistCurrentProfile(false);
+        };
       });
 
-      // Full year comments
       document.querySelectorAll("[data-goal-full-comments]").forEach(el => {
         const num = Number(el.getAttribute("data-goal-full-comments"));
-        el.addEventListener("input", () => {
-          const g = state.goals.find(x => x.num === num);
-          g.fullYear.comments = el.value;
-          saveState(false);
-        });
+        el.oninput = () => {
+          state.goals.find(x => x.num === num).fullYear.comments = el.value;
+          persistCurrentProfile(false);
+        };
       });
     }
 
@@ -1223,38 +1208,396 @@ Not Delivered: No defined governance or reporting cadence`,
     }
 
     // ----------------------------
-    // Totals + scoring + hero sync
+    // Executive Summary (dynamic + clickable)
     // ----------------------------
-    function updateTotalsAndHero() {
-      // totals
+    const scopeDetails = {
+      content: {
+        title: "Content Production (ID)",
+        subtitle: "Tools + deliverables",
+        bullets: [
+          "Articulate: interactive modules, quizzes, SCORM packaging",
+          "Canva: visuals, job aids, templates",
+          "Synthesia: scripted AI video assets, voiceover alignment",
+          "QA: navigation, completion tracking, accessibility basics"
+        ]
+      },
+      lms: {
+        title: "LMS Administration (SABA)",
+        subtitle: "Configuration + operations",
+        bullets: [
+          "Course/module creation & updates",
+          "Cohorts/groups and assignment rules",
+          "Certificates and completion logic",
+          "Program/learning path setup",
+          "Reporting (compliance/activity) + data validation"
+        ]
+      },
+      support: {
+        title: "Learner Support (Tier 1)",
+        subtitle: "Operational support inside LMS",
+        bullets: [
+          "Login issues inside LMS (not network/SSO if outside LMS)",
+          "Progress recovery / reassignment",
+          "Completion not recorded troubleshooting",
+          "Basic learner guidance / how-to support"
+        ]
+      }
+    };
+
+    function renderExecutiveSummary() {
+      // Business outcome cards derived from goals 1–3 (ignore Goal4 if weight=0)
+      const grid = document.getElementById("outcomesGrid");
+      grid.innerHTML = "";
+
+      const primary = state.goals
+        .filter(g => ["OPS","ONB","ID"].includes(g.category))
+        .sort((a,b)=> (b.weight||0)-(a.weight||0));
+
+      primary.forEach(g => {
+        const cat = CATEGORY[g.category] || CATEGORY.GOV;
+
+        const color = cat.color;
+        const colorMap = {
+          orange: { bg:"bg-orange-100", fg:"text-orange-700", chip:"border-orange-200 bg-orange-50 text-orange-700" },
+          blue: { bg:"bg-blue-100", fg:"text-blue-700", chip:"border-blue-200 bg-blue-50 text-blue-700" },
+          emerald: { bg:"bg-emerald-100", fg:"text-emerald-700", chip:"border-emerald-200 bg-emerald-50 text-emerald-700" },
+          slate: { bg:"bg-slate-100", fg:"text-slate-700", chip:"border-slate-200 bg-slate-100 text-slate-700" }
+        };
+        const cm = colorMap[color] || colorMap.slate;
+
+        const card = document.createElement("div");
+        card.className = "bg-slate-50 border border-slate-200 rounded-2xl p-5 card-hover transition-all cursor-pointer";
+        card.onclick = () => openModal({
+          title: `${g.title} (${cat.label})`,
+          subtitle: `Weight: ${g.weight}% • Click “Worksheet” to edit full details`,
+          bodyHtml: `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700">
+              <div class="bg-white border border-slate-200 rounded-xl p-4">
+                <div class="text-xs font-bold text-slate-500 uppercase">Business Outcome</div>
+                <div class="mt-2">${escapeHtml(g.outcome || "")}</div>
+              </div>
+              <div class="bg-white border border-slate-200 rounded-xl p-4">
+                <div class="text-xs font-bold text-slate-500 uppercase">Timing / Due Dates</div>
+                <pre class="mt-2 whitespace-pre-wrap text-sm">${escapeHtml(g.timing || "")}</pre>
+              </div>
+              <div class="bg-white border border-slate-200 rounded-xl p-4 md:col-span-2">
+                <div class="text-xs font-bold text-slate-500 uppercase">Measure / Outcome (KPIs)</div>
+                <pre class="mt-2 whitespace-pre-wrap text-sm">${escapeHtml(g.measure || "")}</pre>
+              </div>
+            </div>
+          `
+        });
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Business outcome</p>
+              <h3 class="text-lg font-bold mt-1">${escapeHtml(cat.label)}</h3>
+            </div>
+            <div class="${cm.bg} ${cm.fg} p-2 rounded-xl">
+              <i data-lucide="${cat.icon}" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <span class="inline-flex items-center gap-2 px-2 py-1 rounded-full border ${cm.chip} text-xs font-semibold">
+              ${escapeHtml(g.title)} • ${g.weight}%
+            </span>
+          </div>
+          <p class="text-sm text-slate-600 mt-3">
+            ${escapeHtml(g.outcome || "")}
+          </p>
+          <p class="text-xs text-slate-500 mt-3">
+            Click for details • auto-synced from worksheet
+          </p>
+        `;
+        grid.appendChild(card);
+      });
+
+      // Scope block as clickable “scope tiles”
+      const scopeBlock = document.getElementById("scopeBlock");
+      scopeBlock.innerHTML = `
+        <div class="bg-white border border-slate-200 rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold">Role Scope (Owned Responsibilities)</h3>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">Clickable</span>
+          </div>
+
+          <div class="space-y-3">
+            ${renderScopeRow("content","Content Production (ID)")}
+            ${renderScopeRow("lms","LMS Administration")}
+            ${renderScopeRow("support","Learner Support (Tier 1)")}
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold">Operational Boundaries (Evaluation Protection)</h3>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700">Governance</span>
+          </div>
+
+          <ul class="space-y-3 text-sm text-slate-700">
+            <li class="flex items-start gap-2">
+              <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
+              <span><strong>System-of-record:</strong> measured work is captured through Jira (once implemented).</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
+              <span><strong>Approval dependency:</strong> SME review timelines may shift deliverable dates; track as “Waiting for Approval”.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="shield" class="w-4 h-4 text-orange-600 mt-0.5"></i>
+              <span><strong>IT boundary:</strong> non-LMS network/SSO issues should route to IT unless defined otherwise.</span>
+            </li>
+          </ul>
+        </div>
+      `;
+
+      lucide.createIcons();
+    }
+
+    function renderScopeRow(key, label) {
+      return `
+        <button class="w-full text-left bg-slate-50 border border-slate-200 rounded-xl p-4 hover:bg-slate-100 transition"
+          onclick="openScope('${key}')">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="font-bold text-slate-900">${label}</div>
+              <div class="text-xs text-slate-500 mt-1">Click to expand details and examples</div>
+            </div>
+            <div class="text-slate-400">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </button>
+      `;
+    }
+
+    function openScope(key) {
+      const d = scopeDetails[key];
+      openModal({
+        title: d.title,
+        subtitle: d.subtitle,
+        bodyHtml: `
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+            <div class="text-xs font-bold text-slate-500 uppercase">Included activities</div>
+            <ul class="mt-2 text-sm text-slate-700 space-y-2">
+              ${d.bullets.map(b => `<li class="flex gap-2"><span class="text-orange-600 font-bold">•</span><span>${escapeHtml(b)}</span></li>`).join("")}
+            </ul>
+          </div>
+        `
+      });
+    }
+
+    // ----------------------------
+    // Cascade Map (generated from goals)
+    // ----------------------------
+    function renderCascade() {
+      const container = document.getElementById("cascadeContainer");
+      container.innerHTML = "";
+
+      state.goals
+        .filter(g => (g.weight || 0) > 0)
+        .sort((a,b)=> (b.weight||0)-(a.weight||0))
+        .forEach(g => {
+          const cat = CATEGORY[g.category] || CATEGORY.GOV;
+
+          const card = document.createElement("details");
+          card.className = "bg-white border border-slate-200 rounded-2xl p-6 card-hover transition-all";
+          card.open = true;
+
+          card.innerHTML = `
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <div class="${catHeaderClass(g.category)} border border-slate-200 p-2 rounded-xl mt-0.5">
+                    <i data-lucide="${cat.icon}" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <p class="text-xs font-bold text-slate-500 uppercase">Goal ${g.num}</p>
+                      <span class="text-xs font-semibold px-2 py-1 rounded-full border ${catBadge(g.category)}">${cat.label}</span>
+                    </div>
+                    <h4 class="text-lg font-bold mt-1">${escapeHtml(g.title)}</h4>
+                    <p class="text-sm text-slate-500 mt-1">${escapeHtml(g.outcome || "")}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-slate-500">Weight</p>
+                  <p class="text-2xl font-extrabold">${g.weight}%</p>
+                </div>
+              </div>
+            </summary>
+
+            <div class="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div class="text-xs font-bold text-slate-500 uppercase">Action</div>
+                <div class="mt-2 text-sm text-slate-700 whitespace-pre-wrap">${escapeHtml(g.action)}</div>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div class="text-xs font-bold text-slate-500 uppercase">Measure / Outcome</div>
+                <div class="mt-2 text-sm text-slate-700 whitespace-pre-wrap">${escapeHtml(g.measure)}</div>
+              </div>
+              <div class="bg-slate-900 text-white rounded-xl p-4 lg:col-span-2">
+                <div class="text-xs font-bold text-slate-300 uppercase">Partial Achievement Defined</div>
+                <div class="mt-2 text-sm text-slate-200 whitespace-pre-wrap">${escapeHtml(g.partial)}</div>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // KPI Targets tab (generated from goals)
+    // ----------------------------
+    function renderKpiTargets() {
+      const container = document.getElementById("kpiTargetsContainer");
+      container.innerHTML = "";
+
+      state.goals
+        .filter(g => (g.weight || 0) > 0)
+        .sort((a,b)=> (b.weight||0)-(a.weight||0))
+        .forEach(g => {
+          const cat = CATEGORY[g.category] || CATEGORY.GOV;
+          const tile = document.createElement("div");
+          tile.className = "bg-white border border-slate-200 rounded-2xl p-5 card-hover transition-all cursor-pointer";
+          tile.onclick = () => openModal({
+            title: `KPI Targets — ${g.title}`,
+            subtitle: `Category: ${cat.label} • Weight: ${g.weight}%`,
+            bodyHtml: `
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div class="text-xs font-bold text-slate-500 uppercase">Measure / Outcome</div>
+                <pre class="mt-2 whitespace-pre-wrap text-sm text-slate-700">${escapeHtml(g.measure)}</pre>
+              </div>
+              <div class="bg-white border border-slate-200 rounded-xl p-4">
+                <div class="text-xs font-bold text-slate-500 uppercase">Timing</div>
+                <pre class="mt-2 whitespace-pre-wrap text-sm text-slate-700">${escapeHtml(g.timing)}</pre>
+              </div>
+            `
+          });
+
+          tile.innerHTML = `
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold px-2 py-1 rounded-full border ${catBadge(g.category)}">${cat.label}</span>
+                  <span class="text-xs text-slate-500">Goal ${g.num}</span>
+                </div>
+                <h4 class="text-lg font-bold mt-2">${escapeHtml(g.title)}</h4>
+                <p class="text-sm text-slate-500 mt-1">${escapeHtml(g.outcome || "")}</p>
+              </div>
+              <div class="${catHeaderClass(g.category)} border border-slate-200 p-2 rounded-xl">
+                <i data-lucide="${cat.icon}" class="w-5 h-5"></i>
+              </div>
+            </div>
+            <div class="mt-3 text-xs text-slate-500">Click to view KPI text & timing.</div>
+          `;
+          container.appendChild(tile);
+        });
+
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // Roadmap + Alignment Items (editable)
+    // ----------------------------
+    function renderRoadmap() {
+      const container = document.getElementById("roadmapContainer");
+      container.innerHTML = "";
+
+      state.roadmap.forEach((r, idx) => {
+        const card = document.createElement("div");
+        card.className = "bg-white border border-slate-200 rounded-2xl p-5";
+        card.innerHTML = `
+          <div class="text-xs font-bold text-slate-500 uppercase">${escapeHtml(r.q)}</div>
+          <input class="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold"
+            value="${escapeAttr(r.title)}" data-roadmap-title="${idx}" />
+          <textarea rows="6" class="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            data-roadmap-bullets="${idx}">${escapeHtml(r.bullets)}</textarea>
+          <div class="text-xs text-slate-500 mt-2">Use one item per line.</div>
+        `;
+        container.appendChild(card);
+      });
+
+      // bind
+      document.querySelectorAll("[data-roadmap-title]").forEach(el => {
+        const idx = Number(el.getAttribute("data-roadmap-title"));
+        el.oninput = () => {
+          state.roadmap[idx].title = el.value;
+          persistCurrentProfile(false);
+        };
+      });
+      document.querySelectorAll("[data-roadmap-bullets]").forEach(el => {
+        const idx = Number(el.getAttribute("data-roadmap-bullets"));
+        el.oninput = () => {
+          state.roadmap[idx].bullets = el.value;
+          persistCurrentProfile(false);
+        };
+      });
+    }
+
+    function renderAlignmentItems() {
+      const container = document.getElementById("alignmentItemsContainer");
+      container.innerHTML = "";
+
+      state.alignmentItems.forEach((a, idx) => {
+        const card = document.createElement("div");
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6";
+        card.innerHTML = `
+          <input class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold"
+            value="${escapeAttr(a.title)}" data-align-title="${idx}" />
+          <textarea rows="7" class="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            data-align-items="${idx}">${escapeHtml(a.items)}</textarea>
+          <div class="text-xs text-slate-500 mt-2">Use one item per line.</div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.querySelectorAll("[data-align-title]").forEach(el => {
+        const idx = Number(el.getAttribute("data-align-title"));
+        el.oninput = () => {
+          state.alignmentItems[idx].title = el.value;
+          persistCurrentProfile(false);
+        };
+      });
+      document.querySelectorAll("[data-align-items]").forEach(el => {
+        const idx = Number(el.getAttribute("data-align-items"));
+        el.oninput = () => {
+          state.alignmentItems[idx].items = el.value;
+          persistCurrentProfile(false);
+        };
+      });
+    }
+
+    // ----------------------------
+    // Totals + hero sync + scoring
+    // ----------------------------
+    function updateTotalsAndScoring() {
       const total = state.goals.reduce((sum, g) => sum + Number(g.weight || 0), 0);
-      const totalEl = document.getElementById("totalWeight");
-      const totalBar = document.getElementById("totalWeightBar");
+
+      document.getElementById("totalWeight").textContent = `${total}%`;
+      document.getElementById("totalWeightBar").style.width = `${Math.min(total, 100)}%`;
+
       const hint = document.getElementById("weightHint");
-
-      if (totalEl) totalEl.textContent = `${total}%`;
-      if (totalBar) totalBar.style.width = `${Math.min(total, 100)}%`;
-
-      if (hint) {
-        if (total === 100) {
-          hint.textContent = "On target.";
-          hint.className = "text-xs text-slate-500 mt-3";
-          totalBar.className = "h-2 bg-emerald-500";
-        } else if (total < 100) {
-          hint.textContent = "Under 100% — add weight or activate Goal 4.";
-          hint.className = "text-xs text-orange-700 mt-3";
-          totalBar.className = "h-2 bg-orange-500";
-        } else {
-          hint.textContent = "Over 100% — reduce weight to match 100%.";
-          hint.className = "text-xs text-red-700 mt-3";
-          totalBar.className = "h-2 bg-red-500";
-        }
+      if (total === 100) {
+        hint.textContent = "On target.";
+        hint.className = "text-xs text-slate-500 mt-3";
+        document.getElementById("totalWeightBar").className = "h-2 bg-emerald-500";
+      } else if (total < 100) {
+        hint.textContent = "Under 100% — add weight or activate Goal 4.";
+        hint.className = "text-xs text-orange-700 mt-3";
+        document.getElementById("totalWeightBar").className = "h-2 bg-orange-500";
+      } else {
+        hint.textContent = "Over 100% — reduce weight to match 100%.";
+        hint.className = "text-xs text-red-700 mt-3";
+        document.getElementById("totalWeightBar").className = "h-2 bg-red-500";
       }
 
-      // per-goal weighted score + overall
       let overall = 0;
       state.goals.forEach(g => {
-        const pct = achievementToPct(g.fullYear.achievement || "Did Not Deliver (0%)");
+        const pct = achievementToPct(g.fullYear.achievement);
         const w = Number(g.weight || 0);
         const weighted = (w * pct) / 100;
         overall += weighted;
@@ -1263,36 +1606,33 @@ Not Delivered: No defined governance or reporting cadence`,
         if (scoreEl) scoreEl.textContent = `${weighted.toFixed(1)}`;
       });
 
-      const overallEl = document.getElementById("overallScore");
-      if (overallEl) overallEl.textContent = `${overall.toFixed(1)} / 100`;
+      document.getElementById("overallScore").textContent = `${overall.toFixed(1)} / 100`;
 
-      // hero sync: use Goal1=LMS Ops, Goal2=Onboarding, remaining = ID/UX bucket
-      const g1 = state.goals[0]?.weight ?? 0;
-      const g2 = state.goals[1]?.weight ?? 0;
-      const rest = state.goals.slice(2).reduce((sum,g)=> sum + Number(g.weight || 0), 0);
+      // hero: OPS / ONB / (ID + GOV)
+      const ops = state.goals.filter(g=>g.category==="OPS").reduce((s,g)=>s+Number(g.weight||0),0);
+      const onb = state.goals.filter(g=>g.category==="ONB").reduce((s,g)=>s+Number(g.weight||0),0);
+      const idux = state.goals.filter(g=>["ID","GOV"].includes(g.category)).reduce((s,g)=>s+Number(g.weight||0),0);
 
-      setHero("Ops", g1);
-      setHero("Onb", g2);
-      setHero("IdUx", rest);
+      setHero("Ops", ops);
+      setHero("Onb", onb);
+      setHero("IdUx", idux);
     }
 
     function setHero(key, value) {
       const pct = Math.max(0, Math.min(100, Number(value || 0)));
-      const wt = document.getElementById(`heroWeight${key}`);
-      const bar = document.getElementById(`heroBar${key}`);
-      if (wt) wt.textContent = `${pct}%`;
-      if (bar) bar.style.width = `${pct}%`;
+      document.getElementById(`heroWeight${key}`).textContent = `${pct}%`;
+      document.getElementById(`heroBar${key}`).style.width = `${pct}%`;
     }
 
     // ----------------------------
-    // Export / Import / Reset
+    // Export / Import
     // ----------------------------
     function exportJSON() {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `MBO_Worksheet_${state.emp.year || "2026"}_${(state.emp.name || "Employee").replaceAll(" ","_")}.json`;
+      a.download = `MBO_${state.emp.year || "2026"}_${(state.emp.name || "Employee").replaceAll(" ","_")}.json`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -1300,17 +1640,60 @@ Not Delivered: No defined governance or reporting cadence`,
       flashAutosave("Exported");
     }
 
+    function exportCSV() {
+      // Flatten: employee + each goal row
+      const rows = [];
+      const header = [
+        "EmployeeName","EmployeeTitle","EmployeeNumber","Manager","Division","Country","Year","Deadline",
+        "GoalNum","Category","Title","BusinessOutcome","Weight","Action","MeasureOutcome","Timing","PartialAchievement",
+        "Q1Status","Q1Comments","Q2Status","Q2Comments","Q3Status","Q3Comments","Q4Status","Q4Comments",
+        "EndOfYearAchievement","EndOfYearComments"
+      ];
+      rows.push(header.join(","));
+
+      state.goals.forEach(g => {
+        const emp = state.emp;
+        const fields = [
+          emp.name, emp.title, emp.id, emp.manager, emp.division, emp.country, emp.year, emp.deadline,
+          g.num, g.category, g.title, g.outcome, g.weight, g.action, g.measure, g.timing, g.partial,
+          g.quarters.Q1.status, g.quarters.Q1.comments,
+          g.quarters.Q2.status, g.quarters.Q2.comments,
+          g.quarters.Q3.status, g.quarters.Q3.comments,
+          g.quarters.Q4.status, g.quarters.Q4.comments,
+          g.fullYear.achievement, g.fullYear.comments
+        ].map(csvEscape);
+        rows.push(fields.join(","));
+      });
+
+      const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `MBO_${state.emp.year || "2026"}_${(state.emp.name || "Employee").replaceAll(" ","_")}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      flashAutosave("CSV Exported");
+    }
+
+    function csvEscape(v) {
+      const s = (v ?? "").toString().replaceAll("\r"," ").replaceAll("\n"," ");
+      if (s.includes(",") || s.includes("\"")) return `"${s.replaceAll("\"","\"\"")}"`;
+      return s;
+    }
+
     function importJSON(file) {
       const reader = new FileReader();
       reader.onload = () => {
         try {
           const parsed = JSON.parse(reader.result);
-          // minimal validation
           if (!parsed.emp || !parsed.goals) throw new Error("Invalid format");
           state = parsed;
-          saveState(false);
+          persistCurrentProfile(false);
           bindEmployeeInputs();
           renderGoals();
+          renderAll();
           flashAutosave("Imported");
         } catch (e) {
           alert("Import failed: invalid JSON format.");
@@ -1320,42 +1703,114 @@ Not Delivered: No defined governance or reporting cadence`,
     }
 
     function resetAll() {
-      if (!confirm("Reset worksheet to defaults? This will clear local saved data for this page.")) return;
-      localStorage.removeItem(STORAGE_KEY);
-      state = structuredClone(defaultState);
+      if (!confirm("Reset THIS profile to defaults?")) return;
+      state = defaultState();
+      persistCurrentProfile(false);
       bindEmployeeInputs();
       renderGoals();
+      renderAll();
       flashAutosave("Reset");
     }
 
     // ----------------------------
-    // Wire up buttons
+    // Render All Views (cross-tab sync)
+    // ----------------------------
+    function renderAll() {
+      renderExecutiveSummary();
+      renderCascade();
+      renderKpiTargets();
+      renderRoadmap();
+      renderAlignmentItems();
+      updateTotalsAndScoring();
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // Guided Tour
+    // ----------------------------
+    const tourSteps = [
+      { tab: "summary", title: "Step 1: Executive Summary", text: "Start here. These cards represent the high-level business outcomes for each major MBO. Click a card to open details." , highlight: "outcomesGrid" },
+      { tab: "worksheet", title: "Step 2: MBO Worksheet", text: "This is the template-aligned source of truth. Edits here automatically update the other tabs (summary, cascade, KPIs, roadmap)." , highlight: "goalsContainer" },
+      { tab: "cascade", title: "Step 3: Cascade Map", text: "This shows each goal as a story: outcome → action → measure → partial achievement definition." , highlight: "cascadeContainer" },
+      { tab: "kpis", title: "Step 4: KPI Targets", text: "This aggregates KPI definitions for quick review and keeps measurement consistent." , highlight: "kpiTargetsContainer" },
+      { tab: "jira", title: "Step 5: Jira Readiness", text: "This section clarifies intake categories and what SLA/priority language means for measurement." , highlight: "content-jira" },
+    ];
+    let tourIndex = 0;
+
+    function startTour() {
+      tourIndex = 0;
+      document.getElementById("tour").classList.remove("hidden");
+      showTourStep();
+    }
+    function endTour() {
+      clearHighlights();
+      document.getElementById("tour").classList.add("hidden");
+    }
+    function nextTour() {
+      if (tourIndex < tourSteps.length - 1) tourIndex++;
+      else { endTour(); return; }
+      showTourStep();
+    }
+    function prevTour() {
+      if (tourIndex > 0) tourIndex--;
+      showTourStep();
+    }
+    function clearHighlights() {
+      document.querySelectorAll(".tour-highlight").forEach(el => el.classList.remove("tour-highlight"));
+    }
+    function showTourStep() {
+      clearHighlights();
+      const step = tourSteps[tourIndex];
+      switchTab(step.tab);
+      document.getElementById("tourTitle").textContent = step.title;
+      document.getElementById("tourText").textContent = step.text;
+      document.getElementById("tourProgress").textContent = `${tourIndex + 1} / ${tourSteps.length}`;
+
+      setTimeout(() => {
+        const el = document.getElementById(step.highlight);
+        if (el) {
+          el.classList.add("tour-highlight");
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 150);
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // Wire Buttons
     // ----------------------------
     function wireButtons() {
-      const btnSave = document.getElementById("btnSave");
-      const btnExport = document.getElementById("btnExport");
-      const btnReset = document.getElementById("btnReset");
-      const importFile = document.getElementById("importFile");
+      document.getElementById("btnSave").onclick = () => persistCurrentProfile(true);
+      document.getElementById("btnExportJSON").onclick = exportJSON;
+      document.getElementById("btnExportCSV").onclick = exportCSV;
+      document.getElementById("btnReset").onclick = resetAll;
 
-      if (btnSave) btnSave.addEventListener("click", () => saveState(true));
-      if (btnExport) btnExport.addEventListener("click", exportJSON);
-      if (btnReset) btnReset.addEventListener("click", resetAll);
-      if (importFile) importFile.addEventListener("change", (e) => {
+      document.getElementById("importFile").onchange = (e) => {
         const f = e.target.files?.[0];
         if (f) importJSON(f);
         e.target.value = "";
-      });
+      };
+
+      document.getElementById("btnNewProfile").onclick = newProfile;
+      document.getElementById("btnDuplicateProfile").onclick = duplicateProfile;
+      document.getElementById("btnDeleteProfile").onclick = deleteProfile;
+
+      document.getElementById("btnTour").onclick = startTour;
     }
 
     // ----------------------------
     // Boot
     // ----------------------------
-    bindEmployeeInputs();
-    renderGoals();
-    wireButtons();
-    updateTotalsAndHero();
-    lucide.createIcons();
+    function boot() {
+      renderProfileSelect();
+      bindEmployeeInputs();
+      renderGoals();
+      wireButtons();
+      renderAll();
+      lucide.createIcons();
+    }
 
+    boot();
   </script>
 
 </body>
