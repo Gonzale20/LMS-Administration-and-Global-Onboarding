@@ -1381,4 +1381,524 @@
 
       state.goals
         .filter(g => (g.weight || 0) > 0)
-        .sort((a,b)=> (b.weight
+        .sort((a,b)=> (b.weight||0)-(a.weight||0))
+        .forEach(g => {
+          const catLabel = state.categoryConfig?.[g.category] || g.category;
+          const base = BASE_CATEGORY[g.category] || BASE_CATEGORY.GOV;
+
+          const card = document.createElement("details");
+          card.className = "bg-white border border-slate-200 rounded-2xl p-6 card-hover transition-all";
+          card.open = true;
+
+          card.innerHTML = `
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <div class="${catHeaderClass(g.category)} border border-slate-200 p-2 rounded-xl mt-0.5">
+                    <i data-lucide="${base.icon}" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <p class="text-xs font-bold text-slate-500 uppercase">Goal ${g.num}</p>
+                      <span class="text-xs font-semibold px-2 py-1 rounded-full border ${catBadge(g.category)}">${escapeHtml(catLabel)}</span>
+                    </div>
+                    <h4 class="text-lg font-bold mt-1">${escapeHtml(g.title)}</h4>
+                    <p class="text-sm text-slate-500 mt-1">${escapeHtml(g.outcome || "")}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-slate-500">Weight</p>
+                  <p class="text-2xl font-extrabold">${g.weight}%</p>
+                </div>
+              </div>
+            </summary>
+
+            <div class="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div class="text-xs font-bold text-slate-500 uppercase">Action</div>
+                <div class="mt-2 text-sm text-slate-700 whitespace-pre-wrap">${escapeHtml(g.action)}</div>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div class="text-xs font-bold text-slate-500 uppercase">Measure / Outcome</div>
+                <div class="mt-2 text-sm text-slate-700 whitespace-pre-wrap">${escapeHtml(g.measure)}</div>
+              </div>
+              <div class="bg-slate-900 text-white rounded-xl p-4 lg:col-span-2">
+                <div class="text-xs font-bold text-slate-300 uppercase">Partial Achievement Defined</div>
+                <div class="mt-2 text-sm text-slate-200 whitespace-pre-wrap">${escapeHtml(g.partial)}</div>
+              </div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // KPI Targets (visual)
+    // ----------------------------
+    function extractTargets(text) {
+      const t = (text || "").replaceAll("–","-");
+      const percentRanges = [...t.matchAll(/(\d{1,3})\s*-\s*(\d{1,3})\s*%/g)].map(m => ({type:"range", min:+m[1], max:+m[2]}));
+      const percents = [...t.matchAll(/(\d{1,3})\s*%/g)].map(m => +m[1]);
+
+      const ops = [...t.matchAll(/(≤|<|>=|≥)\s*(\d+)\s*(business day|business days|bd|day|days|hours|hrs|h)/gi)]
+        .map(m => ({op:m[1], value:+m[2], unit:m[3]}));
+
+      return { percentRanges, percents, ops };
+    }
+
+    function renderKpiTargets() {
+      const container = document.getElementById("kpiTargetsContainer");
+      container.innerHTML = "";
+
+      state.goals
+        .filter(g => (g.weight || 0) > 0)
+        .sort((a,b)=> (b.weight||0)-(a.weight||0))
+        .forEach(g => {
+          const catLabel = state.categoryConfig?.[g.category] || g.category;
+          const base = BASE_CATEGORY[g.category] || BASE_CATEGORY.GOV;
+          const targets = extractTargets(g.measure);
+
+          const card = document.createElement("div");
+          card.className = "bg-white border border-slate-200 rounded-2xl p-5";
+
+          const pctBars = [];
+          // show up to 3 percent targets
+          const seen = new Set();
+          targets.percentRanges.forEach(r => {
+            const avg = Math.round((r.min + r.max) / 2);
+            pctBars.push({ label: `${r.min}–${r.max}%`, value: avg });
+            seen.add(r.min); seen.add(r.max);
+          });
+          targets.percents.forEach(p => {
+            if (pctBars.length >= 3) return;
+            // avoid duplicates from ranges
+            if (seen.has(p)) return;
+            pctBars.push({ label: `${p}%`, value: p });
+            seen.add(p);
+          });
+
+          const timeChips = targets.ops.slice(0,4).map(o => `${o.op} ${o.value} ${o.unit}`);
+
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold px-2 py-1 rounded-full border ${catBadge(g.category)}">${escapeHtml(catLabel)}</span>
+                  <span class="text-xs text-slate-500">Goal ${g.num} • Weight ${g.weight}%</span>
+                </div>
+                <h4 class="text-lg font-bold mt-2">${escapeHtml(g.title)}</h4>
+                <p class="text-sm text-slate-500 mt-1">${escapeHtml(g.outcome || "")}</p>
+              </div>
+              <div class="${catHeaderClass(g.category)} border border-slate-200 p-2 rounded-xl">
+                <i data-lucide="${base.icon}" class="w-5 h-5"></i>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-xs font-bold text-slate-500 uppercase">Detected KPI Targets</div>
+
+              <div class="mt-2 space-y-3">
+                ${pctBars.length ? pctBars.map(b => `
+                  <div>
+                    <div class="flex justify-between text-xs text-slate-600 mb-1">
+                      <span>${escapeHtml(b.label)}</span>
+                      <span class="font-semibold">${b.value}%</span>
+                    </div>
+                    <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-2 ${base.color==="blue"?"bg-blue-500":base.color==="emerald"?"bg-emerald-500":base.color==="orange"?"bg-orange-500":"bg-slate-500"}" style="width:${Math.min(100, Math.max(0,b.value))}%"></div>
+                    </div>
+                  </div>
+                `).join("") : `<div class="text-sm text-slate-500 mt-2">No % targets detected. (Still tracked in Measure/Outcome text.)</div>`}
+              </div>
+
+              ${timeChips.length ? `
+                <div class="mt-4">
+                  <div class="text-xs font-bold text-slate-500 uppercase">Time Targets</div>
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    ${timeChips.map(c => `<span class="text-xs font-semibold px-2 py-1 rounded-full border border-slate-200 bg-slate-50 text-slate-700">${escapeHtml(c)}</span>`).join("")}
+                  </div>
+                </div>
+              ` : ""}
+
+              <button class="mt-4 inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50"
+                onclick="openModal({title:'Measure/Outcome — ${escapeAttr(g.title)}', subtitle:'Edit in Worksheet → Measure/Outcome', bodyHtml:'<pre class=&quot;whitespace-pre-wrap text-sm text-slate-700 bg-slate-50 border border-slate-200 rounded-xl p-4&quot;>${escapeHtml(g.measure)}</pre>'})">
+                <i data-lucide="file-text" class="w-4 h-4"></i> View KPI Text
+              </button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // Roadmap (chips + add/remove)
+    // ----------------------------
+    function renderRoadmap() {
+      const container = document.getElementById("roadmapContainer");
+      container.innerHTML = "";
+
+      state.roadmap.forEach((r, idx) => {
+        const card = document.createElement("div");
+        card.className = "bg-white border border-slate-200 rounded-2xl p-5";
+
+        card.innerHTML = `
+          <div class="text-xs font-bold text-slate-500 uppercase">${escapeHtml(r.q)}</div>
+          <input class="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold"
+            value="${escapeAttr(r.title)}" data-roadmap-title="${idx}" />
+          <div class="mt-3 flex flex-wrap gap-2" id="roadmap-chips-${idx}"></div>
+          <button class="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-semibold hover:bg-slate-50"
+            data-roadmap-add="${idx}">
+            <i data-lucide="plus" class="w-4 h-4"></i> Add Step
+          </button>
+        `;
+        container.appendChild(card);
+
+        // chips
+        const chipsEl = card.querySelector(`#roadmap-chips-${idx}`);
+        (r.items || []).forEach((item, j) => {
+          const chip = document.createElement("div");
+          chip.className = "inline-flex items-center gap-2 px-3 py-2 rounded-full border border-slate-200 bg-slate-50";
+          chip.innerHTML = `
+            <input class="bg-transparent outline-none text-sm w-48"
+              value="${escapeAttr(item)}" data-roadmap-item="${idx}" data-roadmap-item-idx="${j}" />
+            <button class="text-slate-400 hover:text-red-600" data-roadmap-remove="${idx}" data-roadmap-remove-idx="${j}" title="Remove">×</button>
+          `;
+          chipsEl.appendChild(chip);
+        });
+      });
+
+      // bind
+      document.querySelectorAll("[data-roadmap-title]").forEach(el => {
+        const idx = Number(el.getAttribute("data-roadmap-title"));
+        el.oninput = () => { state.roadmap[idx].title = el.value; persistCurrentProfile(false); };
+      });
+
+      document.querySelectorAll("[data-roadmap-item]").forEach(el => {
+        const idx = Number(el.getAttribute("data-roadmap-item"));
+        const j = Number(el.getAttribute("data-roadmap-item-idx"));
+        el.oninput = () => { state.roadmap[idx].items[j] = el.value; persistCurrentProfile(false); };
+      });
+
+      document.querySelectorAll("[data-roadmap-remove]").forEach(btn => {
+        const idx = Number(btn.getAttribute("data-roadmap-remove"));
+        const j = Number(btn.getAttribute("data-roadmap-remove-idx"));
+        btn.onclick = () => {
+          state.roadmap[idx].items.splice(j,1);
+          persistCurrentProfile(false);
+        };
+      });
+
+      document.querySelectorAll("[data-roadmap-add]").forEach(btn => {
+        const idx = Number(btn.getAttribute("data-roadmap-add"));
+        btn.onclick = () => {
+          state.roadmap[idx].items.push("New step...");
+          persistCurrentProfile(false);
+        };
+      });
+
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // Alignment items
+    // ----------------------------
+    function renderAlignmentItems() {
+      const container = document.getElementById("alignmentItemsContainer");
+      container.innerHTML = "";
+
+      state.alignmentItems.forEach((a, idx) => {
+        const card = document.createElement("div");
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6";
+        card.innerHTML = `
+          <input class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold"
+            value="${escapeAttr(a.title)}" data-align-title="${idx}" />
+          <textarea rows="7" class="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            data-align-items="${idx}">${escapeHtml(a.items)}</textarea>
+          <div class="text-xs text-slate-500 mt-2">Use one item per line.</div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.querySelectorAll("[data-align-title]").forEach(el => {
+        const idx = Number(el.getAttribute("data-align-title"));
+        el.oninput = () => { state.alignmentItems[idx].title = el.value; persistCurrentProfile(false); };
+      });
+      document.querySelectorAll("[data-align-items]").forEach(el => {
+        const idx = Number(el.getAttribute("data-align-items"));
+        el.oninput = () => { state.alignmentItems[idx].items = el.value; persistCurrentProfile(false); };
+      });
+    }
+
+    // ----------------------------
+    // Totals + hero allocations (dynamic per category labels)
+    // ----------------------------
+    function updateTotalsAndScoring() {
+      const total = state.goals.reduce((sum, g) => sum + Number(g.weight || 0), 0);
+
+      document.getElementById("totalWeight").textContent = `${total}%`;
+      document.getElementById("totalWeightBar").style.width = `${Math.min(total, 100)}%`;
+
+      const hint = document.getElementById("weightHint");
+      if (total === 100) {
+        hint.textContent = "On target.";
+        hint.className = "text-xs text-slate-500 mt-3";
+        document.getElementById("totalWeightBar").className = "h-2 bg-emerald-500";
+      } else if (total < 100) {
+        hint.textContent = "Under 100% — add weight or activate Goal 4.";
+        hint.className = "text-xs text-orange-700 mt-3";
+        document.getElementById("totalWeightBar").className = "h-2 bg-orange-500";
+      } else {
+        hint.textContent = "Over 100% — reduce weight to match 100%.";
+        hint.className = "text-xs text-red-700 mt-3";
+        document.getElementById("totalWeightBar").className = "h-2 bg-red-500";
+      }
+
+      let overall = 0;
+      state.goals.forEach(g => {
+        const pct = achievementToPct(g.fullYear.achievement);
+        const w = Number(g.weight || 0);
+        const weighted = (w * pct) / 100;
+        overall += weighted;
+
+        const scoreEl = document.getElementById(`goal-${g.num}-score`);
+        if (scoreEl) scoreEl.textContent = `${weighted.toFixed(1)}`;
+      });
+
+      document.getElementById("overallScore").textContent = `${overall.toFixed(1)} / 100`;
+
+      // Hero allocations by category (sorted)
+      const sums = {};
+      ["OPS","ONB","ID","GOV"].forEach(k => sums[k] = 0);
+      state.goals.forEach(g => sums[g.category] = (sums[g.category] || 0) + Number(g.weight || 0));
+
+      const hero = document.getElementById("heroAllocations");
+      hero.innerHTML = "";
+
+      const sorted = Object.entries(sums).sort((a,b)=> b[1]-a[1]).filter(([,v])=>v>0);
+
+      sorted.slice(0,3).forEach(([cat, val]) => {
+        const label = state.categoryConfig?.[cat] || cat;
+        const base = BASE_CATEGORY[cat] || BASE_CATEGORY.GOV;
+        const barColor = base.color==="blue"?"bg-blue-500":base.color==="emerald"?"bg-emerald-500":base.color==="orange"?"bg-orange-500":"bg-slate-500";
+
+        hero.innerHTML += `
+          <div>
+            <div class="flex justify-between text-slate-200 mb-1">
+              <span class="font-semibold">${escapeHtml(label)}</span>
+              <span class="font-bold">${val}%</span>
+            </div>
+            <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div class="h-2 ${barColor}" style="width:${Math.min(100, val)}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById("heroNote").textContent =
+        "Allocations update automatically based on goal categories + weights.";
+    }
+
+    // ----------------------------
+    // Export / Import
+    // ----------------------------
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `MBO_${state.emp.year || "2026"}_${(state.emp.name || "Employee").replaceAll(" ","_")}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      flashAutosave("Exported");
+    }
+
+    function exportCSV() {
+      const rows = [];
+      const header = [
+        "EmployeeName","EmployeeTitle","EmployeeNumber","Manager","Division","Country","Year","Deadline",
+        "GoalNum","Category","CategoryLabel","Title","BusinessOutcome","Weight","Action","MeasureOutcome","Timing","PartialAchievement",
+        "Q1Status","Q1Comments","Q2Status","Q2Comments","Q3Status","Q3Comments","Q4Status","Q4Comments",
+        "EndOfYearAchievement","EndOfYearComments","ServiceDeskTool"
+      ];
+      rows.push(header.join(","));
+
+      const tool = getServiceDeskLabel();
+
+      state.goals.forEach(g => {
+        const emp = state.emp;
+        const catLabel = state.categoryConfig?.[g.category] || g.category;
+
+        const fields = [
+          emp.name, emp.title, emp.id, emp.manager, emp.division, emp.country, emp.year, emp.deadline,
+          g.num, g.category, catLabel, g.title, g.outcome, g.weight, g.action, g.measure, g.timing, g.partial,
+          g.quarters.Q1.status, g.quarters.Q1.comments,
+          g.quarters.Q2.status, g.quarters.Q2.comments,
+          g.quarters.Q3.status, g.quarters.Q3.comments,
+          g.quarters.Q4.status, g.quarters.Q4.comments,
+          g.fullYear.achievement, g.fullYear.comments,
+          tool
+        ].map(csvEscape);
+        rows.push(fields.join(","));
+      });
+
+      const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `MBO_${state.emp.year || "2026"}_${(state.emp.name || "Employee").replaceAll(" ","_")}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      flashAutosave("CSV Exported");
+    }
+
+    function csvEscape(v) {
+      const s = (v ?? "").toString().replaceAll("\r"," ").replaceAll("\n"," ");
+      if (s.includes(",") || s.includes("\"")) return `"${s.replaceAll("\"","\"\"")}"`;
+      return s;
+    }
+
+    function importJSON(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (!parsed.emp || !parsed.goals) throw new Error("Invalid format");
+          state = parsed;
+          persistCurrentProfile(false);
+          bindAllInputs();
+          renderGoals();
+          renderAll();
+          flashAutosave("Imported");
+        } catch (e) {
+          alert("Import failed: invalid JSON format.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetAll() {
+      if (!confirm("Reset THIS profile to defaults?")) return;
+      state = defaultState();
+      persistCurrentProfile(false);
+      bindAllInputs();
+      renderGoals();
+      renderAll();
+      flashAutosave("Reset");
+    }
+
+    // ----------------------------
+    // Render all views
+    // ----------------------------
+    function renderAll() {
+      bindAllInputs();
+      renderExecutiveSummary();
+      renderCascade();
+      renderKpiTargets();
+      renderRoadmap();
+      renderAlignmentItems();
+      updateTotalsAndScoring();
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // Guided Tour
+    // ----------------------------
+    const tourSteps = [
+      { tab: "summary", title: "Step 1: Executive Summary", text: "Start here. These cards represent high-level outcomes for the top objectives. Click a card to see KPIs and timing." , highlight: "outcomesGrid" },
+      { tab: "worksheet", title: "Step 2: Worksheet", text: "This is the source of truth. Edit goals, weights, categories, and due dates here." , highlight: "goalsContainer" },
+      { tab: "cascade", title: "Step 3: Cascade Map", text: "This shows the evaluation story: outcome → action → measure → partial thresholds." , highlight: "cascadeContainer" },
+      { tab: "kpis", title: "Step 4: KPI Targets", text: "This view visualizes % and time targets detected from KPI text." , highlight: "kpiTargetsContainer" },
+      { tab: "jira", title: "Step 5: Service Desk Readiness", text: "This clarifies intake categories and SLA logic for measurement." , highlight: "content-jira" },
+    ];
+    let tourIndex = 0;
+
+    function startTour(fromBanner=false) {
+      state.ui.tourSeen = true;
+      state.ui.tourDismissed = true;
+      persistCurrentProfile(false);
+
+      tourIndex = 0;
+      document.getElementById("tour").classList.remove("hidden");
+      showTourStep();
+    }
+    function endTour() {
+      clearHighlights();
+      document.getElementById("tour").classList.add("hidden");
+    }
+    function nextTour() {
+      if (tourIndex < tourSteps.length - 1) tourIndex++;
+      else { endTour(); return; }
+      showTourStep();
+    }
+    function prevTour() {
+      if (tourIndex > 0) tourIndex--;
+      showTourStep();
+    }
+    function clearHighlights() {
+      document.querySelectorAll(".tour-highlight").forEach(el => el.classList.remove("tour-highlight"));
+    }
+    function showTourStep() {
+      clearHighlights();
+      const step = tourSteps[tourIndex];
+      switchTab(step.tab);
+      document.getElementById("tourTitle").textContent = step.title;
+      document.getElementById("tourText").textContent = step.text;
+      document.getElementById("tourProgress").textContent = `${tourIndex + 1} / ${tourSteps.length}`;
+
+      setTimeout(() => {
+        const el = document.getElementById(step.highlight);
+        if (el) {
+          el.classList.add("tour-highlight");
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 150);
+      lucide.createIcons();
+    }
+
+    // ----------------------------
+    // Wire buttons
+    // ----------------------------
+    function wireButtons() {
+      document.getElementById("btnSave").onclick = () => persistCurrentProfile(true);
+      document.getElementById("btnExportJSON").onclick = exportJSON;
+      document.getElementById("btnExportCSV").onclick = exportCSV;
+      document.getElementById("btnReset").onclick = resetAll;
+
+      document.getElementById("importFile").onchange = (e) => {
+        const f = e.target.files?.[0];
+        if (f) importJSON(f);
+        e.target.value = "";
+      };
+
+      document.getElementById("btnNewProfile").onclick = newProfile;
+      document.getElementById("btnDuplicateProfile").onclick = duplicateProfile;
+      document.getElementById("btnDeleteProfile").onclick = deleteProfile;
+
+      document.getElementById("btnTour").onclick = () => startTour(false);
+    }
+
+    // ----------------------------
+    // Boot
+    // ----------------------------
+    function boot() {
+      renderProfileSelect();
+      bindAllInputs();
+      renderGoals();
+      wireButtons();
+      renderAll();
+      lucide.createIcons();
+    }
+
+    boot();
+  </script>
+
+</body>
+</html>
